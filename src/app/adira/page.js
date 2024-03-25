@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-// import { translate } from "@vitalets/google-translate-api";
 
 export default function GetData() {
   const [inputValue, setInputValue] = useState("");
