@@ -243,7 +243,7 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <div class="border-t border-white my-8 "></div>
+       <div className="border-t border-white my-8 "></div>
 
       <div className="text-center">
         <h2
@@ -317,7 +317,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div class="border-t border-white my-8 "></div>
+       <div className="border-t border-white my-8 "></div>
 
       <div className="text-center">
         <h2
@@ -346,7 +346,7 @@ export default function Home() {
         {/* Add content for the feedback section */}
         <LayoutGrid cards={cards} />
       </div>
-      <div class="border-t border-white my-8 "></div>
+       <div className="border-t border-white my-8 "></div>
 
       {/* footer section */}
       {/* footer section */}

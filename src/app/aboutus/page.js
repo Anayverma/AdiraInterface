@@ -103,7 +103,7 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <div class="border-t border-white my-8 "></div>
+      <div className="border-t border-white my-8 "></div>
 
       <ContactUs/>
     </>
