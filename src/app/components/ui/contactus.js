@@ -72,35 +72,35 @@ export default function ContactUs() {
 
       <div className="text-center text-gray-300 mb-8 max-w-2xl">
         <p className="text-lg leading-relaxed">
-          We're thrilled to introduce Adira, our advanced AI chatbot dedicated
+         {` We're thrilled to introduce Adira, our advanced AI chatbot dedicated
           to women's safety. With Adira, we've crafted a trustworthy companion
           that's always ready to lend a helping hand. Whether you need expert
           advice, emergency support, or simply a friendly ear, Adira is here for
-          you.
+          you.`}
         </p>
         <p className="text-lg leading-relaxed mt-4">
-          Stay empowered and secure with Adira!
+          {`Stay empowered and secure with Adira!`}
         </p>
         <p className="text-lg leading-relaxed mt-4">
-          Warm regards,
+          {`Warm regards,`}
           <br />
-          Team ADIRA ❤️
+          {`Team ADIRA ❤️`}
         </p>
       </div>
 
       <div className="text-center text-gray-300">
         <p className="text-lg">
-          Contact us at:{" "}
+          {`Contact us at:`}{" "}
           <a
             href="mailto:adira@gmail.com"
             className="text-blue-500 hover:underline"
           >
-            adira@gmail.com
+            {`adira@gmail.com`}
           </a>
         </p>
       </div>
       <footer className="text-center text-gray-500 text-sm mt-4">
-        © 2024 Adira. All rights reserved.
+        {`© 2024 Adira. All rights reserved.`}
       </footer>
     </div>
   );

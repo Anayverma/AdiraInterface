@@ -13,7 +13,8 @@ export default function Home() {
     {
       id: 1,
       name: "Dr. Shipha Suman",
-      designation: "Project Head",
+      // designation: " Project Head - (Gold Medalist)Phd , M.tech.",
+      designation: "Project Head  (Gold Medalist,PhD, M.Tech.)",
       message: "Leading the team to innovate and create impactful solutions.",
       image: "https://shorturl.at/noUWX", // Replace with the path to your image
     },
@@ -35,22 +36,24 @@ export default function Home() {
       id: 4,
       name: "Aadyaa Sundriyal",
       designation: "Front End Developer",
-      message: "Crafting user-friendly interfaces with creativity and precision.",
+      message:
+        "Crafting user-friendly interfaces with creativity and precision.",
       image: "https://shorturl.at/bjFN6", // Replace with the path to your image
     },
     {
       id: 5,
       name: "Pratap Bahadur Singh",
       designation: "Backend Developer",
-      message: "Building robust and scalable backend systems for seamless performance.",
-      image:
-        "https://shorturl.at/gNT69", // Replace with the path to your image
+      message:
+        "Building robust and scalable backend systems for seamless performance.",
+      image: "https://shorturl.at/gNT69", // Replace with the path to your image
     },
     {
       id: 6,
       name: "Anay Verma",
       designation: "Backend Developer",
-      message: "Passionate about backend development and creating scalable solutions.",
+      message:
+        "Passionate about backend development and creating scalable solutions.",
       image:
         "https://media.licdn.com/dms/image/D4D35AQGtB8cSGBYyPQ/profile-framedphoto-shrink_400_400/0/1705809413959?e=1711976400&v=beta&t=EtIchbl0sIcy7RJYAHwiDn7QXa1tjAc8T5EPoibp_iw", // Replace with the path to your image
     },
@@ -60,8 +63,7 @@ export default function Home() {
   return (
     <>
       <FloatingNav navItems={navItems} />
-        {/* <BackgroundBeams/> */}
-
+      {/* <BackgroundBeams/> */}
 
       {/* About Us section */}
       <div className="text-center ">
@@ -77,7 +79,7 @@ export default function Home() {
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-gradient-to-r from-transparent to-gray-400"></span>
         </h1>
         <div className="mx-auto max-w-4xl">
-        {/* <BackgroundBeams/> */}
+          {/* <BackgroundBeams/> */}
 
           {items.map((item, index) => (
             <div
@@ -87,7 +89,9 @@ export default function Home() {
               } items-center justify-between mb-8`}
             >
               <div className="w-full lg:w-1/2 mb-4 lg:mb-0 lg:pr-4">
-                <h2 className="text-3xl font-bold text-blue-400">{item.name}</h2>
+                <h2 className="text-3xl font-bold text-blue-400">
+                  {item.name}
+                </h2>
                 <p className="text-xl font-semibold">{item.designation}</p>
                 <p className="text-lg">{item.message}</p>
               </div>
@@ -105,7 +109,7 @@ export default function Home() {
       </div>
       <div className="border-t border-white my-8 "></div>
 
-      <ContactUs/>
+      <ContactUs />
     </>
   );
 }

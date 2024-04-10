@@ -10,7 +10,10 @@ import Lottie from "lottie-react";
 import ws from "../../public/ws.json";
 import connect from "../../public/connect.json";
 import vr from "../../public/vr.json";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 export default function Home() {
+  const router = useRouter();
   const navItems = [
     { name: "Sign In", link: "/" },
     { name: "Try Adira", link: "/adira" },
@@ -48,7 +51,7 @@ export default function Home() {
     {
       id: 1,
       name: "Dr. Shipha Suman",
-      designation: "Project Head",
+      designation: "Project Head  ",
       image: "https://shorturl.at/noUWX", // Replace with the path to your image
     },
     {
@@ -93,11 +96,11 @@ export default function Home() {
             Workplace Safety Solutions
           </h3>
           <p className="text-lg">
-            {" "}
-            Implement AI-powered systems in workplaces to monitor and prevent
+          
+            {`Implement AI-powered systems in workplaces to monitor and prevent
             instances of harassment or discrimination, analyzing employee
             interactions, language patterns, and feedback to identify potential
-            issues and promote a safe and inclusive environment.
+            issues and promote a safe and inclusive environment.`}
           </p>
         </>
       ),
@@ -112,10 +115,10 @@ export default function Home() {
             Educational Outreach Program
           </h3>
           <p className=" relative text-lg">
-            Develop an AI-based educational program aimed at raising awareness
+           {` Develop an AI-based educational program aimed at raising awareness
             about women's safety issues, providing information on rights,
             consent, and healthy relationships through interactive modules,
-            quizzes, and chatbot support.
+            quizzes, and chatbot support.`}
           </p>
         </>
       ),
@@ -130,9 +133,9 @@ export default function Home() {
             Virtual Self-Defense Trainer
           </h3>
           <p className="text-lg">
-            Create a virtual self-defense training program powered by AI,
+            {`Create a virtual self-defense training program powered by AI,
             offering personalized tutorials and simulations tailored to
-            individual skill levels and physical abilities.
+            individual skill levels and physical abilities.`}
           </p>
         </>
       ),
@@ -148,10 +151,10 @@ export default function Home() {
           </h3>
           <p className="text-lg">
             {" "}
-            Integrate AI technology into home security systems to enhance
+            {`Integrate AI technology into home security systems to enhance
             protection against intruders and domestic violence, with features
             such as facial recognition, activity monitoring, and emergency
-            response capabilities linked to law enforcement or trusted contacts.
+            response capabilities linked to law enforcement or trusted contacts.`}
           </p>
         </>
       ),
@@ -168,11 +171,11 @@ export default function Home() {
           </h3>
           <p className="text-lg">
             {" "}
-            Develop an AI-driven platform to assist women in navigating the
+            {`Develop an AI-driven platform to assist women in navigating the
             legal system, providing guidance on filing restraining orders,
             accessing legal aid services, and understanding their rights in
             cases of harassment, assault, or intimate partner violence.
-          </p>
+          `}</p>
         </>
       ),
       className: " ",
@@ -188,10 +191,10 @@ export default function Home() {
           </h3>
           <p className="text-lg">
             {" "}
-            Create AI tools and algorithms to detect and mitigate online threats
+            {`Create AI tools and algorithms to detect and mitigate online threats
             such as stalking, cyberbullying, and revenge porn, providing women
             with privacy settings, content moderation tools, and legal support
-            to safeguard their digital identities and personal information.
+            to safeguard their digital identities and personal information.`}
           </p>
         </>
       ),
@@ -207,10 +210,10 @@ export default function Home() {
 
       {/* home section */}
       <div className="relative h-screen flex items-center justify-center">
-        <BackgroundBeams className="h-screen w-screen" />
+        {/* <BackgroundBeams className="h-screen w-screen" /> */}
         <div className="text-center">
           <p className="text-xl font-bold text-gray-400 mb-6">
-            INDIA's First AI for Women{" "}
+           {` INDIA's First AI for Women`}{" "}
           </p>
           <p
             className="text-sm text-gray-600 mb-6"
@@ -234,16 +237,21 @@ export default function Home() {
             words={sentences[currentSentenceIndex]}
           />
           <button
+            type="button"
+            onClick={() => router.push("/adira")}
             className="bg-slate-500 text-white py-3 px-6 rounded-full hover:bg-gray-300 transition duration-300 ease-in-out"
             style={{
               background: "linear-gradient(to bottom, #8c8c8c, #000000)",
+              zIndex: "999", // Adjust the value as needed
+              position: "relative", // Ensure it respects z-index
             }}
           >
-            Explore
+            Panic Button
           </button>
         </div>
+        <BackgroundBeams className="h-screen w-screen" />
       </div>
-       <div className="border-t border-white my-8 "></div>
+      <div className="border-t border-white my-8 "></div>
 
       <div className="text-center">
         <h2
@@ -279,24 +287,24 @@ export default function Home() {
               <Lottie animationData={ws} />
 
               <p className="text-lg">
-                With cutting-edge Artificial Intelligence technology, our
+                {`With cutting-edge Artificial Intelligence technology, our
                 chatbot provides a safe and confidential space for women to seek
                 assistance, access resources, and receive support in moments of
-                need.
+                need.`}
               </p>
             </div>
 
             {/* <!-- Feature 2 --> */}
             <div className="bg-gray-800 rounded-lg text-whiteX">
               <h3 className="relative font-bold text-2xl mb-4">
-                Voice Commands...
+               {` Voice Commands...`}
               </h3>
               <Lottie animationData={vr} />
 
               <p className="text-lg">
-                Introducing our cutting-edge AI-powered voice recording feature!
+                {`Introducing our cutting-edge AI-powered voice recording feature!
                 Experience seamless, hands-free recording with unparalleled
-                accuracy and clarity.
+                accuracy and clarity.`}
               </p>
             </div>
 
@@ -308,16 +316,16 @@ export default function Home() {
               <Lottie animationData={connect} />
 
               <p className="text-lg">
-                Whether you're fighting for justice, championing causes, or
+                {`Whether you're fighting for justice, championing causes, or
                 amplifying voices that need to be heard, our technology ensures
-                that every word is captured with precision and clarity.
+                that every word is captured with precision and clarity.`}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-       <div className="border-t border-white my-8 "></div>
+      <div className="border-t border-white my-8 "></div>
 
       <div className="text-center">
         <h2
@@ -346,7 +354,7 @@ export default function Home() {
         {/* Add content for the feedback section */}
         <LayoutGrid cards={cards} />
       </div>
-       <div className="border-t border-white my-8 "></div>
+      <div className="border-t border-white my-8 "></div>
 
       {/* footer section */}
       {/* footer section */}
