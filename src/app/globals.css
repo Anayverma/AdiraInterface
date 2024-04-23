@@ -31,3 +31,11 @@ body {
     text-wrap: balance;
   }
 }
+@layer base {
+  .font-outline-2 {
+    -webkit-text-stroke: 1px gainsboro;
+  }
+  .font-outline-4 {
+    -webkit-text-stroke: 4px white;
+  }
+}
