@@ -212,7 +212,7 @@ export default function Home() {
     });
 
     return () => unsubscribe(); // Unsubscribe the listener on component unmount
-  }, [plan]); // Dependency array with 'plan'
+  }, [plan,user]); // Dependency array with 'plan'
 
   // useEffect(() => {
   //   // async function storeInitialData(){
@@ -269,6 +269,57 @@ export default function Home() {
       console.error("error Signing with google ", error);
     }
   };
+
+  // import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+
+// async function signInWithGoogle(userPlan) {
+//   if (window.cordova) {
+//     // Cordova environment
+//     return this.gl.login(['email', 'public_profile']).then(res => {
+//       const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.authResponse.accessToken);
+//       return firebase.auth().signInWithCredential(googleCredential);
+//     });
+//   } else {
+//     // Non-Cordova environment
+//     const auth = getAuth(app);
+//     const provider = new GoogleAuthProvider();
+//     try {
+//       await signInWithPopup(auth, provider);
+//       setPlan(userPlan);
+//       router.push("/");
+//     } catch (error) {
+//       // Display a sweetAlert notification for the error
+//       Swal.fire({
+//         icon: 'error',
+//         title: 'Error',
+//         text: 'Error signing in with Google. Please try again.',
+//       });
+//       console.error("Error signing in with Google", error);
+//     }
+//   }
+// }
+
+
+  // async function signInWithGoogle(userPlan) {
+  //   if (window.cordova) {
+  //     return this.gl.login(['email', 'public_profile']).then(res => {
+  //       const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.authResponse.accessToken);
+  //       return firebase.auth().signInWithCredential(googleCredential);
+  //     })
+  //   }
+  //   else {
+  //     const auth = getAuth(app);
+  //   const provider = new GoogleAuthProvider();
+  //   try {
+  //     await signInWithPopup(auth, provider);
+  //     setPlan(userPlan);
+
+  //     router.push("/");
+  //   } catch (error) {
+  //     console.alert("error Signing with google ", error);
+  //   }
+  // }
+  // }
 
   // const router = useRouter();
   const navItems = [
