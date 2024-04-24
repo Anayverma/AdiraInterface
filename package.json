@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^3.3.0",
     "@uidotdev/usehooks": "^2.4.1",
     "clsx": "^2.1.0",
     "firebase": "^10.10.0",

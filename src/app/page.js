@@ -11,6 +11,7 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
+import { checkout } from "./components/checkout";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import React, { useState, useEffect } from "react";
 // import { useLocalStorage } from 'next/hooks';
@@ -550,8 +551,8 @@ export default function Home() {
             <button
               onClick={() => {
                 // console.log("ek do teen");
-                setPay(true
-                )
+                setPay(true)
+
                 setCouponCode("");
               }}
               className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
@@ -568,7 +569,14 @@ export default function Home() {
                     Premium Subscription
                   </h2>
                   <button
-                    onClick={console.log("hogaye")}
+                    onClick={()=>{
+                      checkout(
+                        {
+                          lineItems:[{price:"price_1P8QUrSJZsRaoKNmBKJctE2k",quantity:1}]
+                        }
+                      )
+                    }
+                    }
                     className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
                   >
                     Buy Premium

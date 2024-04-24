@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { db } from "../../../config";
 import { collection, addDoc, getDocs,deleteDoc,doc,query, where, getFirestore,getDoc  } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import app from "../../../config";
 import Link from "next/link";
 async function getDocumentById(collectionPath, documentId) {
@@ -546,13 +546,14 @@ export default function GetData() {
                 </button>
               </div>
               <div className="p-8 rounded-lg shadow-md">
-                {/* <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}!        </h1> */}
+                <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}    </h1>
                 <a
-                  href="http://localhost:3000/"
+                  href="https://adira-interface.vercel.app/"
                   className="bg-red-100 underline hover:bg-red-900 text-black font-bold py-2 px-4 rounded"
                 >
                   {`Upgrade ↗`} 
                 </a>
+          
               </div>
 
               {/* -------------------------CLEAR CHAT-----------------------------  */}
