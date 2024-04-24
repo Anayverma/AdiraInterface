@@ -49,28 +49,28 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 //   }
 // }
 
-const addDataToFirestore = async (name, email, plan, uid) => {
-  try {
-    const firestore = getFirestore();
-    const userCollection = collection(firestore, "users"); // Assuming 'users' is your collection name
+// const addDataToFirestore = async (name, email, plan, uid) => {
+//   try {
+//     const firestore = getFirestore();
+//     const userCollection = collection(firestore, "users"); // Assuming 'users' is your collection name
 
-    // Add a new document with user data
-    const docRef = await addDoc(userCollection, {
-      name: name,
-      email: email,
-      plan: plan,
-      uid: uid,
-      createdAt: new Date(), // Optional: Add a timestamp for when the document was created
-    });
+//     // Add a new document with user data
+//     const docRef = await addDoc(userCollection, {
+//       name: name,
+//       email: email,
+//       plan: plan,
+//       uid: uid,
+//       createdAt: new Date(), // Optional: Add a timestamp for when the document was created
+//     });
 
-    console.log("Document added with ID: ", docRef.id);
-    const result = await addDataToFireStore(name, email, plan, uid);
-    return result; // Return success
-  } catch (error) {
-    console.error("Error adding document: ", error);
-    return false; // Return false on error
-  }
-};
+//     console.log("Document added with ID: ", docRef.id);
+//     const result = await addDataToFireStore(name, email, plan, uid);
+//     return result; // Return success
+//   } catch (error) {
+//     console.error("Error adding document: ", error);
+//     return false; // Return false on error
+//   }
+// };
 
 async function addDataToFireStore(name, email, plan, cluster) {
   try {
@@ -123,7 +123,7 @@ async function addDataToFireStore(name, email, plan, cluster) {
 export default function Home() {
   // const storedUser = localStorage.getItem("user");
   // let initialUser = null;
-  
+
   // try {
   //   if (storedUser) {
   //     initialUser = JSON.parse(storedUser);
@@ -131,20 +131,22 @@ export default function Home() {
   // } catch (error) {
   //   console.error("Error parsing user from localStorage:", error);
   // }
-  
+
   // const [user, setUser] = useState(initialUser);
 
   // const [user, setUser] = useLocalStorage(("user", null));
-  const [user,setUser]=useState(null)
+  const [user, setUser] = useState(null);
 
   // useEffect(()=>{
   // setUser()
 
   // },[user])
+  const [couponCode, setCouponCode] = useState("");
   const auth = getAuth(app);
   const [plan, setPlan] = useState("");
   const [tempPlan, setTempPlan] = useState("");
   const router = useRouter();
+  const [pay, setPay] = useState(false);
   async function getPlan(user) {
     //   // useEffect(()=>{
 
@@ -153,7 +155,7 @@ export default function Home() {
       const clusterRef = collection(firestore, user.uid);
 
       // Check if the collection with the specified cluster (user.uid) exists
-      const clusterSnapshot =await getDocs(clusterRef);
+      const clusterSnapshot = await getDocs(clusterRef);
       const existingDoc = clusterSnapshot.docs[0]; // Assuming there's only one document per cluster
       if (existingDoc) {
         console.log(existingDoc.data().plan);
@@ -169,16 +171,16 @@ export default function Home() {
 
   useEffect(() => {
     // if (user != JSON.parse(localStorage.getItem("user"))) {
-      const auth = getAuth();
-      const storedUser = localStorage.getItem("user");
-      // getPlan(user);
-      console.log(storedUser)
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-        getPlan(user);
-        console.log("here,s the plan--", plan);
-      }
+    const auth = getAuth();
+    const storedUser = localStorage.getItem("user");
+    // getPlan(user);
+    console.log(storedUser);
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      getPlan(user);
+      console.log("here,s the plan--", plan);
+    }
     // }
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser && plan !== "") {
@@ -212,50 +214,7 @@ export default function Home() {
     });
 
     return () => unsubscribe(); // Unsubscribe the listener on component unmount
-  }, [plan,user]); // Dependency array with 'plan'
-
-  // useEffect(() => {
-  //   // async function storeInitialData(){
-
-  //   async function localUser() {
-  //     const storedUser = localStorage.getItem("user");
-  //     // await getPlan(user);
-  //     if (storedUser) {
-  //       const parsedUser = JSON.parse(storedUser);
-  //       setUser(parsedUser);
-  //       setPlan(parsedUser.plan);
-  //     }
-  //   }
-  //   if(localStorage.getItem("user"))
-  //     {localUser()}
-  //     else{
-  //   const auth = getAuth(app);
-  //   const unsubscribe = auth.onAuthStateChanged(async (user) => {
-  //     if (user && plan != "") {
-  //       const success = await addDataToFireStore(
-  //         user.displayName,
-  //         user.email,
-  //         plan,
-  //         user.uid
-  //       );
-  //       if (success) {
-  //         console.log("success he bhai success hehehe .at ", user.uid);
-  //         // await getPlan(user);
-  //       localStorage.setItem('user', JSON.stringify(user));
-
-  //     } else {
-  //         console.log("Bhai BT hai kya kre ");
-  //         await getPlan(user);
-  //       }
-  //       console.log("hruuhfhuiuhhfhffuh", plan);
-  //       setUser(user);
-  //     } else {
-  //       localStorage.removeItem('user');
-  //       setUser(null);
-  //     }
-  //   });
-  //   return () => unsubscribe();}
-  // }, [plan,user]);
+  }, [plan, user]);
   const signInWithGoogle = async (userPlan) => {
     // setPlan(userPlan);
     const auth = getAuth(app);
@@ -272,33 +231,32 @@ export default function Home() {
 
   // import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
-// async function signInWithGoogle(userPlan) {
-//   if (window.cordova) {
-//     // Cordova environment
-//     return this.gl.login(['email', 'public_profile']).then(res => {
-//       const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.authResponse.accessToken);
-//       return firebase.auth().signInWithCredential(googleCredential);
-//     });
-//   } else {
-//     // Non-Cordova environment
-//     const auth = getAuth(app);
-//     const provider = new GoogleAuthProvider();
-//     try {
-//       await signInWithPopup(auth, provider);
-//       setPlan(userPlan);
-//       router.push("/");
-//     } catch (error) {
-//       // Display a sweetAlert notification for the error
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Error',
-//         text: 'Error signing in with Google. Please try again.',
-//       });
-//       console.error("Error signing in with Google", error);
-//     }
-//   }
-// }
-
+  // async function signInWithGoogle(userPlan) {
+  //   if (window.cordova) {
+  //     // Cordova environment
+  //     return this.gl.login(['email', 'public_profile']).then(res => {
+  //       const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.authResponse.accessToken);
+  //       return firebase.auth().signInWithCredential(googleCredential);
+  //     });
+  //   } else {
+  //     // Non-Cordova environment
+  //     const auth = getAuth(app);
+  //     const provider = new GoogleAuthProvider();
+  //     try {
+  //       await signInWithPopup(auth, provider);
+  //       setPlan(userPlan);
+  //       router.push("/");
+  //     } catch (error) {
+  //       // Display a sweetAlert notification for the error
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: 'Error signing in with Google. Please try again.',
+  //       });
+  //       console.error("Error signing in with Google", error);
+  //     }
+  //   }
+  // }
 
   // async function signInWithGoogle(userPlan) {
   //   if (window.cordova) {
@@ -518,6 +476,15 @@ export default function Home() {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_i_28IWikUcD4zK92xt1qy4iShdipacRRBSDMJsFGqA&s", // Replace with the URL of the thumbnail image
     },
   ];
+  function handleit(e) {
+    e.preventDefault();
+    setCouponCode((prev) => prev + " ");
+    if (couponCode == "e") {
+      console.log("applied hai bhai");
+      signInWithGoogle("Premium");
+    }
+    setPay(false)
+  }
 
   return (
     <>
@@ -573,21 +540,101 @@ export default function Home() {
         {!user ? (
           <div>
             <button
-              onClick={() => signInWithGoogle("Pro")}
+              onClick={() => {
+                signInWithGoogle("Pro");
+              }}
               className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
             >
               Sign in with Google-pro
             </button>
             <button
-                onClick={() => signInWithGoogle("Premium")}
-                className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
-              >
-                Sign in with Google-premium
-              </button>
+              onClick={() => {
+                // console.log("ek do teen");
+                setPay(true
+                )
+                setCouponCode("");
+              }}
+              className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
+            >
+              Sign in with Google-premium
+            </button>
+            {pay && (
+              <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                <div className="cursor-pointer" onClick={() => setPay(false)}>
+                  {`❌`}
+                </div>
+                <div className="bg-white p-8 rounded-md shadow-lg">
+                  <h2 className="text-xl font-bold mb-4">
+                    Premium Subscription
+                  </h2>
+                  <button
+                    onClick={console.log("hogaye")}
+                    className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
+                  >
+                    Buy Premium
+                  </button>
+                  <form onSubmit={handleit} className="flex">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter coupon code"
+                      className="border text-stone-950 border-gray-400 p-2 rounded-l-md focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded-r-md"
+                    >
+                      Apply
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           // Render this section if user is authenticated
           <div className="bg-white text-black h-[60vh] w-[80vw] flex items-center justify-center">
+            {pay && (
+              <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                <div className="cursor-pointer" onClick={() => setPay(false)}>
+                  {`❌`}
+                </div>
+                <div className="bg-white p-8 rounded-md shadow-lg">
+                  <h2 className="text-xl font-bold mb-4">
+                    Premium Subscription
+                  </h2>
+                  <button
+                    onClick={console.log("hogaye")}
+                    className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
+                  >
+                    Buy Premium
+                  </button>
+                  <form onSubmit={console.log("cc hogaye")} className="flex">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter coupon code"
+                      className="border border-gray-400 p-2 rounded-l-md focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      onSubmit={() => {
+                        setCouponCode((prev) => prev + " ");
+                        if (couponCode == "early200")
+                          console.log("applied hai bhai");
+                        signInWithGoogle("Premium");
+                        setPay(false);
+                      }}
+                      className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded-r-md"
+                    >
+                      Apply
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
             <p>
               Thanks for signing in, {user.displayName}! with - {plan}Plan
             </p>
@@ -601,12 +648,51 @@ export default function Home() {
               </button>
             </div>
             {plan == "Pro" ? (
+              
+              <>
               <button
-                onClick={() => signInWithGoogle("Premium")}
-                className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
-              >
-                Sign in with Google-premium
-              </button>
+              onClick={() => {
+                // console.log("ek do teen");
+                setPay(true);
+              }}
+              className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
+            >
+              Sign in with Google-premium
+            </button>
+            {pay && (
+              <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                <div className="cursor-pointer" onClick={() => setPay(false)}>
+                  {`❌`}
+                </div>
+                <div className="bg-white p-8 rounded-md shadow-lg">
+                  <h2 className="text-xl font-bold mb-4">
+                    Premium Subscription
+                  </h2>
+                  <button
+                    onClick={console.log("hogaye")}
+                    className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
+                  >
+                    Buy Premium
+                  </button>
+                  <form onSubmit={handleit} className="flex">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter coupon code"
+                      className="border text-stone-950 border-gray-400 p-2 rounded-l-md focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded-r-md"
+                    >
+                      Apply
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+</>
             ) : (
               ""
             )}

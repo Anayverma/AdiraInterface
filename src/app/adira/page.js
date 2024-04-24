@@ -5,8 +5,7 @@ import { collection, addDoc, getDocs,deleteDoc,doc,query, where, getFirestore,ge
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import app from "../../../config";
-import { Coming_Soon } from "next/font/google";
-
+import Link from "next/link";
 async function getDocumentById(collectionPath, documentId) {
   const firestore = getFirestore();
   const documentRef = doc(firestore, collectionPath, documentId);
@@ -548,14 +547,12 @@ export default function GetData() {
               </div>
               <div className="p-8 rounded-lg shadow-md">
                 {/* <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}!        </h1> */}
-                <button
-                  onClick={()=>{
-                    router.push("/")
-                  }}
+                <a
+                  href="http://localhost:3000/"
                   className="bg-red-100 underline hover:bg-red-900 text-black font-bold py-2 px-4 rounded"
                 >
                   {`Upgrade ↗`} 
-                </button>
+                </a>
               </div>
 
               {/* -------------------------CLEAR CHAT-----------------------------  */}
