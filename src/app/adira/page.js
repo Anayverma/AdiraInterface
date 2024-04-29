@@ -1,99 +1,42 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { db } from "../../../config";
-import { collection, addDoc, getDocs,deleteDoc,doc,query, where, getFirestore,getDoc  } from "firebase/firestore";
+// import { db } from "../../../config";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  getFirestore,
+  getDoc,
+} from "firebase/firestore";
+import Lottie from "lottie-react";
+import load from "../../../public/load.json";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import app from "../../../config";
-import Link from "next/link";
-async function getDocumentById(collectionPath, documentId) {
-  const firestore = getFirestore();
-  const documentRef = doc(firestore, collectionPath, documentId);
-
-  try {
-    const docSnapshot = await getDoc(documentRef);
-
-    if (docSnapshot.exists()) {
-      // Document exists, return the document data
-      return { id: docSnapshot.id, ...docSnapshot.data() };
-    } else {
-      // Document does not exist
-      console.log(`Document with ID '${documentId}' does not exist in collection '${collectionPath}'`);
-      return null;
-    }
-  } catch (error) {
-    console.error(`Error fetching document: ${error}`);
-    return null;
-  }
-}
-
-async function deleteCollection(collectionPath) {
-  const firestore = getFirestore();
-
-  // Create a query to get all documents in the collection
-  const q = query(collection(firestore, collectionPath));
-
-  try {
-    const querySnapshot = await getDocs(q);
-
-    // Delete each document in the collection
-    querySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-      console.log(`Document with ID ${doc.id} successfully deleted`);
-    });
-
-    // After deleting all documents, delete the collection itself
-    await deleteDoc(doc(firestore, collectionPath));
-    console.log(`Collection '${collectionPath}' successfully deleted`);
-  } catch (error) {
-    console.error(`Error removing collection: ${error}`);
-  }
-  return true;
-}
-
-
-async function fetchDocsfromFireStore(cluster) {
-  const querySanpshot = await getDocs(collection(db, cluster));
-  console.log("sara data--", querySanpshot);
-  const data = [];
-  querySanpshot.forEach((doc) => {
-    data.push({
-      id: doc.id,
-      ...doc.data(),
-    });
-  });
-  return data;
-}
-
-async function addDataToFireStore(name, email, chat,plan ,cluster) {
-  try {
-    const docRef = await addDoc(collection(db, cluster), {
-      name: name,
-      email: email,
-      chat: chat,
-      plan:plan
-    });
-    console.log("chat Stored Succesfully ", docRef.id);
-    return true;
-  } catch (error) {
-    console.log("Chat did not stored ", error);
-    return false;
-  }
-}
+import {
+  getDocumentById,
+  deleteCollection,
+  fetchDocsfromFireStore,
+  addTheDataToFireStore,
+} from "@/model";
+import { userImage, adiraImage } from "../../../public/staticData";
 
 export default function GetData() {
-  const [inputValue, setInputValue] = useState("");
   const [query, setQuery] = useState("");
-  const [output, setOutput] = useState("Namaskar bheno aur bhaiyo");
+  // const [output, setOutput] = useState("Namaskar bheno aur bhaiyo");
   const [loading, setLoading] = useState(false);
-  const [plan,setPlan]=useState("")
+  const [plan, setPlan] = useState("");
   const [chat, setChat] = useState([
     {
       role: "Adira",
       message: "Hi welcome to adira our own women ki baatchit",
     },
   ]);
-  let parsedChat = {};
+  // let parsedChat = {};
   const messagesEndRef = useRef(null);
   const [showContactForm, setShowContactForm] = useState(false);
   const [name, setName] = useState("");
@@ -101,20 +44,20 @@ export default function GetData() {
   const recognition = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
   const auth = getAuth(app);
-  const userImage="https://shorturl.at/noqS3";
-  const adiraImage="https://shorturl.at/bCIX1";
+  const [image, setImage] = useState(userImage);
+
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [fsdata, setFsdata] = useState("abhi toh empty hai bhai ..... ");
 
-  async function getPlan(user){
+  async function getPlan(user) {
     const firestore = getFirestore();
     const clusterRef = collection(firestore, user.uid);
 
     const clusterSnapshot = await getDocs(clusterRef);
-    const existingDoc = clusterSnapshot.docs[0]; // Assuming there's only one document per cluster
-    console.log(existingDoc.data().plan)
-    setPlan(existingDoc.data().plan)
+    const existingDoc = clusterSnapshot.docs[0];
+    console.log(existingDoc.data().plan);
+    setPlan(existingDoc.data().plan);
   }
 
   useEffect(() => {
@@ -123,9 +66,11 @@ export default function GetData() {
         setUser(currentUser);
         setEmail(currentUser.email);
         setName(currentUser.displayName);
-        getPlan(currentUser)
+        getPlan(currentUser);
+        setImage(currentUser.photoURL);
       } else {
-        router.push("/");
+        // router.push("/");
+        const test = 0;
       }
     });
     console.log("ye lo user lelo user", user);
@@ -145,63 +90,16 @@ export default function GetData() {
         return data;
       }
       if (user != null) {
-        const data=await fetchstoredData();
+        const data = await fetchstoredData();
         console.log(" FS DATA ==  ", data[0].id);
-        const obj= await getDocumentById(user.uid,data[0].id)
-        const savedChat=obj.chat
-        console.log("yuegyug",savedChat)
-        setChat(savedChat)
-        // await fetchDocsfromFireStore()
-    // console.log(fsdata[0].id)
-    // console.log(fsdata[0])
-
-        }
-      
+        const obj = await getDocumentById(user.uid, data[0].id);
+        const savedChat = obj.chat;
+        console.log("yuegyug", savedChat);
+        setChat(savedChat);
+      }
     }
     getData();
   }, [user]);
-  // console.log(" FS DATA == ", fsdata);
-  // useEffect( () => {
-    // const storedChat = localStorage.getItem("chat");
-    // console.log("stored chat is", storedChat);
-
-
-
-
-
-    // await fetchDocsfromFireStore()
-    // // console.log(fsdata[0].id)
-    // console.log(fsdata[0])
-
-
-
-
-
-
-    // if (storedChat) {
-    //   try {
-    //     const parsedChat = JSON.parse(storedChat);
-    //     setChat(parsedChat);
-    //     console.log(parsedChat, "pojdoj");
-    //     console.log("chat is ", chat);
-    //   } catch (error) {
-    //     console.error("Error parsing stored chat:", error);
-    //     // Handle parsing error gracefully, e.g., by setting default chat state
-    //     setChat([]);
-    //   }
-    // } else {
-    //   // Handle case where no chat data is stored (initial load or empty storage)
-    //   setChat([]);
-    // }
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("bye");
-  //   console.log(chat);
-  //   // Save chat state to local storage whenever it changes
-  //   localStorage.setItem("chat", JSON.stringify(chat));
-  // }, [chat]);
-
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -250,24 +148,38 @@ export default function GetData() {
       }
       const responseData = await response.json();
       const { message } = responseData;
+
+      const command = JSON.stringify({ QUERY: query, MESSAGE: message });
+      // setLoading(true);
+      const response_new = await fetch("https://adira-interface.vercel.app/api", {
+        
+        // const response_new = await fetch(`${window.location.origin}/api`, {
+          
+          // const response_new = await fetch("http://localhost:3000/api", {
+        mode: 'no-cors',
+        method: "POST",
+        body: command,
+      });
+      const data = await response_new.json();
+
+      console.log("data hai yeh bhai ", data);
+      const message_new = data.RESULT;
+      console.log("new message hai yeh bhai ", message_new);
+
       setChat((prevChat) => [
         ...prevChat,
         {
           role: "Adira",
-          message: message,
+          message: message_new,
         },
       ]);
-      storeChatData(query, message);
+      storeChatData(query, message_new);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     } finally {
       setLoading(false);
     }
   }
-
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -278,7 +190,7 @@ export default function GetData() {
       ...prevChat,
       {
         role: "user",
-        message: query,// User's profile picture URL
+        message: query, // User's profile picture URL
       },
     ]);
     setQuery("");
@@ -295,9 +207,7 @@ export default function GetData() {
       return;
     }
 
-
-
-    const success = await addDataToFireStore(
+    const success = await addTheDataToFireStore(
       name,
       email,
       chat,
@@ -322,15 +232,9 @@ export default function GetData() {
     };
     const updatedchat = [...chat, newquery, newMessage];
 
+    const result = await deleteCollection(user.uid);
 
-
-   const result = await deleteCollection(user.uid)
-
-
-
-    
-
-    const success = await addDataToFireStore(
+    const success = await addTheDataToFireStore(
       user.displayName,
       user.email,
       updatedchat,
@@ -347,9 +251,69 @@ export default function GetData() {
   return (
     <>
       {user == null ? (
-        <div>Verifying your sign in ...</div>
+        // <div>Verifying your sign in ...</div>
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-slate-50	 p-8 rounded-lg shadow-md">
+            <div className="flex-col justify-between">
+              <h2 className="text-2xl font-semibold mb-4 text-black">
+                You have not Signed In !!!
+              </h2>
+              <button
+                className="text-black underline hover:text-lg"
+                onClick={() => router.push("/")}
+              >
+                {`HOME ↗`}
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
-        <main>
+        <main className="bg-black">
+          <nav className="navbar bg-zinc-900">
+            <div className="navbar-left">
+              <span className="company-name">Adira</span>
+              <span></span>
+              <span className="text-sm text-slate-700	"> 1.0</span>
+            </div>
+            <div className="navbar-right">
+              <button
+                type="button"
+                onClick={() => {
+                  // handleSubmit()
+                  setShowContactForm(true);
+                }}
+                className={` px-6 py-2 rounded-lg transition-colors w-25 h-10 duration-300 ${
+                  plan == "Premium"
+                    ? "bg-red-500 text-white hover:bg-yellow-600"
+                    : "bg-gray-400 text-gray-600 cursor-not-allowed"
+                }`}
+                disabled={plan == "Pro"}
+              >
+                {plan ? "Contact Us" : "Contact Us (Unavailable)"}
+              </button>
+              <div className=" rounded-lg my-2 ">
+                <h1 className="text-3xl font-bold"> {user ? " " : "Guest"} </h1>
+                <a
+                  href="https://adira-interface.vercel.app/"
+                  
+                  // href="http://localhost:3000/"
+                  className=" navbar-button bg-slate-600  hover:bg-slate-400 text-black font-bold py-2 px-4 rounded"
+                >
+                  {`Upgrade`}
+                </a>
+              </div>
+              {/* <div className="p-8 rounded-lg shadow-md"> */}
+              {/* <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}!        </h1> */}
+              <button
+                onClick={handleLogout}
+                className=" navbar-button bg-slate-600  hover:bg-slate-400 text-white font-bold  rounded"
+              >
+                Logout
+              </button>
+              {/* </div> */}
+            </div>
+          </nav>
+
           <div className={`mb-[10vw]`}>
             {chat.map((message, index) => (
               <div key={index}>
@@ -363,8 +327,8 @@ export default function GetData() {
                     <div
                       className={`text-white p-2 rounded-lg max-w-[70%] mb-2 ${
                         message.role === "user"
-                          ? "bg-blue-500 self-end text-right ml-auto mr-[5%]"
-                          : "bg-yellow-500 self-start ml-[5%] mt-6 "
+                          ? "bg-slate-600 self-end text-right ml-auto mr-[5%]"
+                          : "bg-black self-start ml-[5%] mt-6 "
                       }`}
                     >
                       {message.message}
@@ -374,15 +338,16 @@ export default function GetData() {
                 {message.role === "user" && (
                   <div className="flex items-center justify-end">
                     <div
-                      className={`text-white p-2 rounded-lg max-w-[70%] mb-2 bg-blue-500 self-end text-right ml-auto mr-[5%]`}
+                      className={`text-white p-2 rounded-lg max-w-[70%] mb-2 bg-slate-600 self-end text-right ml-auto mr-[5%]`}
                     >
                       {message.message}
                     </div>
                     <img
-                      src={userImage}
+                      src={image}
                       alt="Profile Pic"
                       className="w-10 h-10 rounded-full mr-4"
                     />
+                    {/* {console.log(user.photoUrl)} */}
                     <button
                       type="button"
                       onClick={() => setQuery(message.message)}
@@ -399,11 +364,12 @@ export default function GetData() {
 
           <form
             onSubmit={handleSubmit}
-            className="fixed bottom-0 left-0 w-full  p-4 border-t "
+            className="fixed bottom-0 left-0 w-full  "
           >
-            <div className="max-w-screen-lg mx-auto flex items-center">
+            <div className=" flex items-center">
               <label className="flex-grow">
                 <span className="sr-only">Enter your query:</span>
+
                 <input
                   type="text"
                   name="llmQuery"
@@ -416,12 +382,41 @@ export default function GetData() {
 
               <button
                 type="submit"
-                className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300"
+                className="ml-4 bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300"
                 disabled={loading} // Disable the button when loading is true
               >
-                {loading ? "Loading..." : "Submit"}{" "}
+                {loading ? (
+                  "Loading...."
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+                  </svg>
+                )}{" "}
                 {/* Change button text when loading */}
               </button>
+              {!isRecording && (
+                <button
+                  type="button"
+                  onClick={startSpeechRecognition}
+                  className={`ml-4 bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-600 transition-colors duration-300
+                 `}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z" />
+                    <path d="M6 10.5a.75.75 0 0 1 .75.75v1.5a5.25 5.25 0 1 0 10.5 0v-1.5a.75.75 0 0 1 1.5 0v1.5a6.751 6.751 0 0 1-6 6.709v2.291h3a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5h3v-2.291a6.751 6.751 0 0 1-6-6.709v-1.5A.75.75 0 0 1 6 10.5Z" />
+                  </svg>
+                </button>
+              )}
               {showContactForm && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
                   <div className="bg-slate-50	 p-8 rounded-lg shadow-md">
@@ -487,35 +482,10 @@ export default function GetData() {
               {/* -------------------- contact form -------------------- */}
 
               {/* Existing form code here */}
-              <button
-      type="button"
-      onClick={() => {
-        // handleSubmit()
-        setShowContactForm(true);
-      }}
-      className={`ml-4 px-6 py-2 rounded-lg transition-colors duration-300 ${
-        plan=="Premium"
-          ? 'bg-red-500 text-white hover:bg-yellow-600'
-          : 'bg-gray-400 text-gray-600 cursor-not-allowed'
-      }`}
-      disabled={plan=="Pro"}
-    >
-      {plan ? 'Contact Us' : 'Contact Us (Unavailable)'}
-    </button>
+
               {/* Existing buttons and logout code */}
 
               {/* -------------------------not RECORDING-----------------------------  */}
-
-              {!isRecording && (
-                <button
-                  type="button"
-                  onClick={startSpeechRecognition}
-                  className={`ml-4 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300
-                 `}
-                >
-                  Voice Query
-                </button>
-              )}
 
               {/* -------------------------RECORDING-----------------------------  */}
 
@@ -536,26 +506,6 @@ export default function GetData() {
 
               {/* ------------------------- LOGOUT -----------------------------  */}
 
-              <div className="p-8 rounded-lg shadow-md">
-                {/* <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}!        </h1> */}
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Logout
-                </button>
-              </div>
-              <div className="p-8 rounded-lg shadow-md">
-                <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}    </h1>
-                <a
-                  href="https://adira-interface.vercel.app/"
-                  className="bg-red-100 underline hover:bg-red-900 text-black font-bold py-2 px-4 rounded"
-                >
-                  {`Upgrade ↗`} 
-                </a>
-          
-              </div>
-
               {/* -------------------------CLEAR CHAT-----------------------------  */}
 
               <div className="p-8 rounded-lg shadow-md">
@@ -570,9 +520,22 @@ export default function GetData() {
                       },
                     ]);
                   }}
-                  className="bg-white hover:bg-red-700 text-black font-bold py-2 px-4 rounded"
+                  className="bg-slate-900 hover:bg-slate-600 text-black font-bold py-2 px-4 rounded"
                 >
-                  Clear Chat
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className=" text-white w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
                 </button>
               </div>
             </div>

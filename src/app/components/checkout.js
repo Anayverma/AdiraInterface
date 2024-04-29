@@ -16,7 +16,7 @@ export async function checkout({ lineItems, customerName, customerAddress }) {
         const session = await stripe.redirectToCheckout({
             mode: "payment",
             lineItems,
-            customerEmail: 'customer@example.com', // Replace with actual customer email
+             // Replace with actual customer email
             billingAddressCollection: 'required',
             shippingAddressCollection: {
                 allowedCountries: ['US'], // Restrict to India (or relevant countries)

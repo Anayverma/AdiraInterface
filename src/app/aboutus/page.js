@@ -54,18 +54,13 @@ export default function Home() {
       designation: "Backend Developer",
       message:
         "Passionate about backend development and creating scalable solutions.",
-      image:
-        "https://media.licdn.com/dms/image/D4D35AQGtB8cSGBYyPQ/profile-framedphoto-shrink_400_400/0/1705809413959?e=1711976400&v=beta&t=EtIchbl0sIcy7RJYAHwiDn7QXa1tjAc8T5EPoibp_iw", // Replace with the path to your image
+      image:"https://lh3.googleusercontent.com/a/ACg8ocIgzxbgajxbktQ9qFJqel6N-4U9vUzLiWECq_cQZnWov06oUFc=s96-c"
     },
-    // Add more items as needed
   ];
 
   return (
     <>
       <FloatingNav navItems={navItems} />
-      {/* <BackgroundBeams/> */}
-
-      {/* About Us section */}
       <div className="text-center ">
         <h1
           className="text-[10rem] font-bold mb-4 relative"
@@ -92,8 +87,8 @@ export default function Home() {
                 <h2 className="text-3xl font-bold text-blue-400">
                   {item.name}
                 </h2>
-                <p className="text-xl font-semibold">{item.designation}</p>
-                <p className="text-lg">{item.message}</p>
+                <p className="text-xl font-semibold text-white">{item.designation}</p>
+                <p className="text-lg text-slate-600">{item.message}</p>
               </div>
               <div className="w-full lg:w-1/2">
                 <img

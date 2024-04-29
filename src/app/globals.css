@@ -17,13 +17,8 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  /* color: rgb(var(--foreground-rgb)); */
+  background: black;
 }
 
 @layer utilities {
@@ -39,3 +34,62 @@ body {
     -webkit-text-stroke: 4px white;
   }
 }
+@keyframes smoke {
+  0% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-10px); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+.text-with-smoke {
+  box-shadow: 1px 1px 10px 3px grey;
+  
+}
+
+.centeralign {
+  display: flex;
+  justify-content: center; /* Centers items horizontally */
+  align-items: center; /* Centers items vertically */
+  flex-direction: column; /* Arranges items in a column layout */
+  /* height: 100vh; Optionally, to make the container fill the viewport height */
+}
+
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* background-color: #333; Change color as needed */
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.navbar-left {
+  flex: 1;
+}
+
+.navbar-right {
+  display: flex;
+}
+
+.company-name {
+  color: #fff; /* Change color as needed */
+  font-size: 1.5rem; /* Change font size as needed */
+  font-weight: bold;
+}
+
+.navbar-button {
+  /* background-color: #007bff; Change color as needed */
+  color: #fff; /* Change color as needed */
+  border: none;
+  padding: 8px 16px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* .navbar-button:hover {
+  background-color: #0056b3; Change color as needed
+} */

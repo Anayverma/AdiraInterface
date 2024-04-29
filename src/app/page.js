@@ -11,146 +11,35 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
+import { addDataToFireStore } from "@/model";
 import { checkout } from "./components/checkout";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import React, { useState, useEffect } from "react";
-// import { useLocalStorage } from 'next/hooks';
 import { FloatingNav } from "./components/ui/floating-navbar";
 import { BackgroundBeams } from "./components/ui/background-beams";
 import { TextGenerateEffect } from "./components/ui/text-generate-effect";
-import { AnimatedTooltip } from "./components/ui/animated-tooltip";
 import { LayoutGrid } from "./components/ui/layout-grid";
 import ContactUs from "./components/ui/contactus";
 import Lottie from "lottie-react";
 import ws from "../../public/ws.json";
 import connect from "../../public/connect.json";
 import vr from "../../public/vr.json";
-
 import app from "../../config";
-import { db } from "../../config";
+import signin from "../../public/signin.json";
+import { sentences, navItems, items, cards } from "../../public/staticData";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
-// import { getAuth,signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
-// async function addDataToFireStore(name, email, plan, cluster) {
-//   try {
-//     const docRef = await addDoc(collection(db, cluster), {
-//       name: name,
-//       email: email,
-//       chat: [],
-//       plan: plan,
-//     });
-//     console.log("chat Stored Succesfully ", docRef.id);
-//     return true;
-//   } catch (error) {
-//     console.log("Chat did not stored ", error);
-//     return false;
-//   }
-// }
-
-// const addDataToFirestore = async (name, email, plan, uid) => {
-//   try {
-//     const firestore = getFirestore();
-//     const userCollection = collection(firestore, "users"); // Assuming 'users' is your collection name
-
-//     // Add a new document with user data
-//     const docRef = await addDoc(userCollection, {
-//       name: name,
-//       email: email,
-//       plan: plan,
-//       uid: uid,
-//       createdAt: new Date(), // Optional: Add a timestamp for when the document was created
-//     });
-
-//     console.log("Document added with ID: ", docRef.id);
-//     const result = await addDataToFireStore(name, email, plan, uid);
-//     return result; // Return success
-//   } catch (error) {
-//     console.error("Error adding document: ", error);
-//     return false; // Return false on error
-//   }
-// };
-
-async function addDataToFireStore(name, email, plan, cluster) {
-  try {
-    const firestore = getFirestore();
-    const clusterRef = collection(firestore, cluster);
-
-    // Check if the collection with the specified cluster (user.uid) exists
-    const clusterSnapshot = await getDocs(clusterRef);
-
-    if (clusterSnapshot.empty) {
-      // Collection does not exist for the specified cluster (user.uid)
-      // Proceed to add the document
-      const docRef = await addDoc(clusterRef, {
-        name: name,
-        email: email,
-        chat: [
-          {
-            role: "Adira",
-            message: "Hi welcome to adira our own women ki baatchit",
-          },
-        ],
-        plan: plan,
-      });
-      console.log("Document stored successfully with ID:", docRef.id);
-      return true;
-    } else {
-      // Collection already exists, check for plan upgrade if plan is 'premium'
-      const existingDoc = clusterSnapshot.docs[0]; // Assuming there's only one document per cluster
-      console.log("jjf", existingDoc.data().plan);
-      if (plan == "Premium" && existingDoc.data().plan == "Pro") {
-        console.log("pro but prem");
-        // Upgrade to 'premium' plan if the existing plan is not 'pro'
-        await updateDoc(doc(firestore, cluster, existingDoc.id), {
-          plan: "Premium",
-        });
-        console.log("Account upgraded to premium plan");
-      } else {
-        // Plan is not 'premium' or account already has 'pro' plan, do not upgrade
-        console.log("Plan not upgraded");
-      }
-
-      return true; // Return true to indicate document operation was successful
-    }
-  } catch (error) {
-    console.error("Error adding/updating document:", error);
-    return false;
-  }
-}
-
 export default function Home() {
-  // const storedUser = localStorage.getItem("user");
-  // let initialUser = null;
-
-  // try {
-  //   if (storedUser) {
-  //     initialUser = JSON.parse(storedUser);
-  //   }
-  // } catch (error) {
-  //   console.error("Error parsing user from localStorage:", error);
-  // }
-
-  // const [user, setUser] = useState(initialUser);
-
-  // const [user, setUser] = useLocalStorage(("user", null));
   const [user, setUser] = useState(null);
 
-  // useEffect(()=>{
-  // setUser()
-
-  // },[user])
   const [couponCode, setCouponCode] = useState("");
   const auth = getAuth(app);
   const [plan, setPlan] = useState("");
-  const [tempPlan, setTempPlan] = useState("");
   const router = useRouter();
   const [pay, setPay] = useState(false);
   async function getPlan(user) {
-    //   // useEffect(()=>{
-
     if (user != null) {
       const firestore = getFirestore();
       const clusterRef = collection(firestore, user.uid);
@@ -164,12 +53,6 @@ export default function Home() {
       }
     }
   }
-  //       if(plan!=existingDoc.data().plan){
-  //         setPlan(existingDoc.data().plan)
-  //       }
-  //     }
-  // },[plan])
-
   useEffect(() => {
     // if (user != JSON.parse(localStorage.getItem("user"))) {
     const auth = getAuth();
@@ -230,76 +113,6 @@ export default function Home() {
     }
   };
 
-  // import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-
-  // async function signInWithGoogle(userPlan) {
-  //   if (window.cordova) {
-  //     // Cordova environment
-  //     return this.gl.login(['email', 'public_profile']).then(res => {
-  //       const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.authResponse.accessToken);
-  //       return firebase.auth().signInWithCredential(googleCredential);
-  //     });
-  //   } else {
-  //     // Non-Cordova environment
-  //     const auth = getAuth(app);
-  //     const provider = new GoogleAuthProvider();
-  //     try {
-  //       await signInWithPopup(auth, provider);
-  //       setPlan(userPlan);
-  //       router.push("/");
-  //     } catch (error) {
-  //       // Display a sweetAlert notification for the error
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Error',
-  //         text: 'Error signing in with Google. Please try again.',
-  //       });
-  //       console.error("Error signing in with Google", error);
-  //     }
-  //   }
-  // }
-
-  // async function signInWithGoogle(userPlan) {
-  //   if (window.cordova) {
-  //     return this.gl.login(['email', 'public_profile']).then(res => {
-  //       const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.authResponse.accessToken);
-  //       return firebase.auth().signInWithCredential(googleCredential);
-  //     })
-  //   }
-  //   else {
-  //     const auth = getAuth(app);
-  //   const provider = new GoogleAuthProvider();
-  //   try {
-  //     await signInWithPopup(auth, provider);
-  //     setPlan(userPlan);
-
-  //     router.push("/");
-  //   } catch (error) {
-  //     console.alert("error Signing with google ", error);
-  //   }
-  // }
-  // }
-
-  // const router = useRouter();
-  const navItems = [
-    // { name: (user!=null)?"Sign Out":"Sign In", link: "/" },
-    { name: "Try Adira↗ ", link: "/adira" },
-    { name: "About Us", link: "/aboutus" },
-    { name: "F&Q", link: "/f&q" },
-  ];
-
-  const sentences = [
-    "1 in 3 women globally has experienced physical or sexual violence in their lifetime (WHO). ",
-    "On average, there are about 433,648 victims of rape and sexual assault each year in the US  ",
-    "1 in 6 women in the US has experienced stalking victimization ",
-    "Globally, about 30% of women have experienced physical and/or sexual violence by their intimate partner (WHO). ",
-    "Women and girls represent 71% of human trafficking victims globally (UNODC). ",
-    "Approximately 25 million unsafe abortions occur each year, with serious health risks for women (WHO). ",
-    "21% of women aged 18 to 29 report being sexually harassed online (Pew Research Center) ",
-    "Globally, 12 million girls are married before the age of 18 each year (UNICEF). ",
-    "1 in 3 women worldwide has experienced physical or sexual violence in the workplace (ILO). ",
-    "Only 52% of women globally believe they have access to justice (UNDP).",
-  ];
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -322,243 +135,337 @@ export default function Home() {
   }, []);
 
   // Example items array for the AnimatedTooltip component
-  const items = [
-    {
-      id: 1,
-      name: "Dr. Shipha Suman",
-      designation: "Project Head  ",
-      image: "https://shorturl.at/noUWX", // Replace with the path to your image
-    },
-    {
-      id: 2,
-      name: "Himanshi Raghav",
-      designation: "Machine Learning Engineer",
-      image: "https://shorturl.at/dJMX3", // Replace with the path to your image
-    },
-    {
-      id: 3,
-      name: "Debadrita Dey",
-      designation: "Machine Learning Engineer",
-      image: "https://shorturl.at/cgvJ2", // Replace with the path to your image
-    },
-    {
-      id: 4,
-      name: "Aadyaa Sundriyal",
-      designation: "Front End Developer",
-      image: "https://shorturl.at/bjFN6", // Replace with the path to your image
-    },
-    {
-      id: 5,
-      name: "Pratap Bahadur Singh",
-      designation: "Backend Developer",
-      image: "https://shorturl.at/gNT69", // Replace with the path to your image
-    },
-    {
-      id: 6,
-      name: "Anay Verma",
-      designation: "Backend Developer",
-      image:
-        "https://media.licdn.com/dms/image/D4D35AQGtB8cSGBYyPQ/profile-framedphoto-shrink_400_400/0/1705809413959?e=1711976400&v=beta&t=EtIchbl0sIcy7RJYAHwiDn7QXa1tjAc8T5EPoibp_iw", // Replace with the path to your image
-    },
-  ];
-  const cards = [
-    {
-      id: 1,
-      content: (
-        <>
-          <h3 className="relative  font-bold text-2xl mb-4">
-            Workplace Safety Solutions
-          </h3>
-          <p className="text-lg">
-            {`Implement AI-powered systems in workplaces to monitor and prevent
-            instances of harassment or discrimination, analyzing employee
-            interactions, language patterns, and feedback to identify potential
-            issues and promote a safe and inclusive environment.`}
-          </p>
-        </>
-      ),
-      className: " ",
-      thumbnail: "https://shorturl.at/cruDT",
-    },
-    {
-      id: 2,
-      content: (
-        <>
-          <h3 className=" relative  font-bold text-2xl mb-4">
-            Educational Outreach Program
-          </h3>
-          <p className=" relative text-lg">
-            {` Develop an AI-based educational program aimed at raising awareness
-            about women's safety issues, providing information on rights,
-            consent, and healthy relationships through interactive modules,
-            quizzes, and chatbot support.`}
-          </p>
-        </>
-      ),
-      className: "",
-      thumbnail: "https://shorturl.at/FIZ08",
-    },
-    {
-      id: 3,
-      content: (
-        <>
-          <h3 className="relative font-bold text-2xl mb-4">
-            Virtual Self-Defense Trainer
-          </h3>
-          <p className="text-lg">
-            {`Create a virtual self-defense training program powered by AI,
-            offering personalized tutorials and simulations tailored to
-            individual skill levels and physical abilities.`}
-          </p>
-        </>
-      ),
-      className: " ",
-      thumbnail: "https://shorturl.at/goRW7",
-    },
-    {
-      id: 4,
-      content: (
-        <>
-          <h3 className="relative font-bold text-2xl mb-4">
-            Home Security Solutions
-          </h3>
-          <p className="text-lg">
-            {" "}
-            {`Integrate AI technology into home security systems to enhance
-            protection against intruders and domestic violence, with features
-            such as facial recognition, activity monitoring, and emergency
-            response capabilities linked to law enforcement or trusted contacts.`}
-          </p>
-        </>
-      ),
-      className: " ",
-      thumbnail:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH8FBE2__ebr72VbmeTRZyeTXyozxjhU7cx9cVnV1zCw&s", // Replace with the URL of the thumbnail image
-    },
-    {
-      id: 5,
-      content: (
-        <>
-          <h3 className=" relative  font-bold text-2xl mb-4">
-            Legal Aid Navigator
-          </h3>
-          <p className="text-lg">
-            {" "}
-            {`Develop an AI-driven platform to assist women in navigating the
-            legal system, providing guidance on filing restraining orders,
-            accessing legal aid services, and understanding their rights in
-            cases of harassment, assault, or intimate partner violence.
-          `}
-          </p>
-        </>
-      ),
-      className: " ",
-      thumbnail:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlgdJEo5Y3T98g0Qzt08mr3PKR8G7T_vvHhduEUzk3pA&s", // Replace with the URL of the thumbnail image
-    },
-    {
-      id: 5,
-      content: (
-        <>
-          <h3 className=" relative  font-bold text-2xl mb-4">
-            Online Privacy Protection
-          </h3>
-          <p className="text-lg">
-            {" "}
-            {`Create AI tools and algorithms to detect and mitigate online threats
-            such as stalking, cyberbullying, and revenge porn, providing women
-            with privacy settings, content moderation tools, and legal support
-            to safeguard their digital identities and personal information.`}
-          </p>
-        </>
-      ),
-      className: " ",
-      thumbnail:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_i_28IWikUcD4zK92xt1qy4iShdipacRRBSDMJsFGqA&s", // Replace with the URL of the thumbnail image
-    },
-  ];
+
   function handleit(e) {
     e.preventDefault();
     setCouponCode((prev) => prev + " ");
-    if (couponCode == "e") {
+    if (couponCode == "AnayIsGreat") {
       console.log("applied hai bhai");
       signInWithGoogle("Premium");
     }
-    setPay(false)
+    setPay(false);
   }
 
   return (
-    <>
-      <FloatingNav navItems={navItems} />
+    <div className="bg-black flex flex-col items-center justify-center"
+   >
+      {/* <FloatingNav navItems={navItems} /> */}
+      <nav className="navbar   w-[100%]"
+       style={{
+        WebkitBackdropFilter: "blur(10px)", // for Safari
+        backdropFilter: "blur(10px)",
+       }}>
+      <div className="navbar-left">
+      <span className="company-name text-5xl">Adira</span>
+              <span></span>
+              <span className="text-sm	text-slate-600"> 1.0</span>
+      </div>
+      <div className="navbar-right">
+        <button className="navbar-button " onClick={()=>router.push("/aboutus")}>{`About Us ↗`}</button>
+        <button className="navbar-button " onClick={()=>router.push("/adira")}>{`Try Adira ↗`}</button>
+        <button className="navbar-button " onClick={()=>router.push("/f&q")}>{`F&Q ↗`}</button>
+      </div>
+    </nav>
       {/* home section */}
-      <div className="relative h-screen flex items-center justify-center">
-        {/* <BackgroundBeams className="h-screen w-screen" /> */}
-        <div className="text-center">
-          <p className="text-xl font-bold text-gray-400 mb-6">
-            {` INDIA's First AI for Women`}{" "}
-          </p>
-          <p
-            className="text-sm text-gray-600 mb-6"
-            style={{ wordSpacing: "30px" }}
-          >
-            I N T R O D U C I N G{" "}
-          </p>
+      <div className="block">
+        <div className="h-screen flex items-center justify-center">
+          {/* <BackgroundBeams className="h-screen w-screen" /> */}
+          <div className="text-center">
+            <p className="text-xl font-bold text-gray-400 mb-6">
+              {` INDIA's First AI for Women`}{" "}
+            </p>
+            <p
+              className="text-sm text-gray-600 mb-6"
+              style={{ wordSpacing: "30px" }}
+            >
+              I N T R O D U C I N G{" "}
+            </p>
 
-          <h1
-            className="text-[10rem] font-bold mb-4"
+            <h1
+              className="text-[10rem] font-bold mb-4"
+              style={{
+                background: "linear-gradient(to bottom, #8c8c8c, #000000)",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              ADIRA
+            </h1>
+            <TextGenerateEffect
+              className="text-x text-gray-300 mb-6"
+              words={sentences[currentSentenceIndex]}
+            />
+            <button
+              type="button"
+              onClick={() => router.push("/adira")}
+              className="bg-slate-500 text-white py-3 px-6 rounded-full hover:bg-gray-300 transition duration-300 ease-in-out "
+              style={{
+                background: "linear-gradient(to bottom, #8c8c8c, #000000)",
+                zIndex: "999", // Adjust the value as needed
+                position: "relative", // Ensure it respects z-index
+              }}
+            >
+              {`ADIRA  ↗`}
+            </button>
+          </div>
+          <BackgroundBeams className="" />
+        </div>{" "}
+      </div>
+      <div className="border-t  from-blue-900 to-zinc-600 border-white  w-[80%]"></div>
+
+      {/* <br />
+      <br />
+      <br />
+      <br /> */}
+      <div className="text-center   flex items-center justify-center flex-col h-[160vh] ">
+        {/* <LampContainer/> */}
+        <div className="text-center">
+          <h2
+            className="text-[100px] font-bold   "
             style={{
               background: "linear-gradient(to bottom, #8c8c8c, #000000)",
               WebkitBackgroundClip: "text",
-              color: "transparent",
+              WebkitTextFillColor: "transparent",
             }}
           >
-            ADIRA
-          </h1>
-          <TextGenerateEffect
-            className="text-x text-gray-300 mb-6"
-            words={sentences[currentSentenceIndex]}
-          />
-          <button
-            type="button"
-            onClick={() => router.push("/panic")}
-            className="bg-slate-500 text-white py-3 px-6 rounded-full hover:bg-gray-300 transition duration-300 ease-in-out"
-            style={{
-              background: "linear-gradient(to bottom, #8c8c8c, #000000)",
-              zIndex: "999", // Adjust the value as needed
-              position: "relative", // Ensure it respects z-index
-            }}
-          >
-            Panic Button
-          </button>
+            Our Plan{" "}
+          </h2>
+          {/* <div class="relative text-gray-900">
+  <span class="absolute left-0 w-10 h-full bg-gradient-to-b from-transparent to-white opacity-0 animate-smoke"></span>
+  Your Text Here
+</div> */}
         </div>
-        <BackgroundBeams className="h-screen w-screen" />
-      </div>
-      <div className="border-t border-white my-8"></div>
-      <div className="text-center flex items-center justify-center flex-col h-[80vh]">
-        <h2 className="text-[650%] font-bold text-black mb-8 font-outline-2">
-          SIGN IN
-        </h2>
         {!user ? (
           <div>
-            <button
-              onClick={() => {
-                signInWithGoogle("Pro");
-              }}
-              className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
-            >
-              Sign in with Google-pro
-            </button>
-            <button
-              onClick={() => {
-                // console.log("ek do teen");
-                setPay(true)
+            <div>
+              <div className="container mx-auto px-6 py-12 flex flex-wrap">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                  <div className=" rounded-lg border text-slate-400 w-[90%]">
+                    <h3 className="relative font-bold text-2xl mb-4 text-white p-3 py-9 ">
+                      Emergency
+                    </h3>
+                    <br />
+                    <p className="text-lg">
+                      {`Experinec our services free without signup Avail free Tokenn to get the query generated by oADIRA 
+                `}
+                    </p>
+                    <br />
+                    <h2
+                      className="relative font-bold text-4xl text- "
+                      style={{
+                        background:
+                          "linear-gradient(to bottom, #8c8c8c, #000000)",
+                        WebkitBackgroundClip: "text",
+                        color: "transparent",
+                      }}
+                    >
+                      {`@₹0`}
+                    </h2>
 
-                setCouponCode("");
-              }}
-              className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
-            >
-              Sign in with Google-premium
-            </button>
+                    <br />
+                    <div className="flex justify-center items-center">
+                      <div className="text-left">
+                        <p className="text-lg">{`✖ 5 Token Only`}</p>
+                        <p className="text-lg">{`✖ Consult Us`}</p>
+                        <p className="text-lg">{`✔ No Sign In Required`}</p>
+                      </div>
+                    </div>
+
+                    <br />
+                    <br />
+
+                    <div className="">
+                      <div className="grid gap-8 items-start justify-center">
+                        <div className="relative group">
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-900 to-zinc-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                          <button
+                            onClick={() => router.push("/panic")}
+                            className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                          >
+                            <span className="flex items-center space-x-5">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-6 h-6 h-6 w-6 text-zinc-600 -rotate-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"
+                                />
+                              </svg>
+
+                              <span className="pr-6 text-gray-100">Panic</span>
+                            </span>
+                            <span className="pl-6 text-blue-900 group-hover:text-gray-100 transition duration-200">
+                              &rarr;
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className=" rounded-lg border text-slate-400 w-[90%]">
+                    <h3 className="relative font-bold text-2xl mb-4 text-white p-3 py-9 ">
+                      Pro
+                    </h3>
+                    <br />
+                    <p className="text-lg">
+                      {`Experinec our services free without signup Avail free Tokenn to get the query generated by oADIRA 
+                `}
+                    </p>
+                    <br />
+                    <h2
+                      className="relative font-bold text-4xl text- "
+                      style={{
+                        background:
+                          "linear-gradient(to bottom, #8c8c8c, #000000)",
+                        WebkitBackgroundClip: "text",
+                        color: "transparent",
+                      }}
+                    >
+                      {`@₹0`}
+                    </h2>
+
+                    <br />
+                    <div className="flex justify-center items-center">
+                      <div className="text-left">
+                        <p className="text-lg">{`✔ Unlimited Token`}</p>
+                        <p className="text-lg">{`✖ Consult Us`}</p>
+                        <p className="text-lg">{`✔ Sign In Required`}</p>
+                      </div>
+                    </div>
+                    <br />
+
+                    <br />
+
+                    <div className="">
+                      <div className="grid gap-8 items-start justify-center">
+                        <div className="relative group">
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-900 to-zinc-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                          <button
+                            onClick={() => {
+                              signInWithGoogle("Pro");
+                            }}
+                            className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                          >
+                            <span className="flex items-center space-x-5">
+                              {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-pink-600 -rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>  */}
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-6 h-6 h-6 w-6 text-zinc-600 -rotate-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"
+                                />
+                              </svg>
+
+                              <span className="pr-6 text-gray-100">Pro</span>
+                            </span>
+                            <span className="pl-6 text-blue-900 group-hover:text-gray-100 transition duration-200">
+                              &rarr;
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                      <br />
+                    </div>
+                  </div>{" "}
+                  <div className=" rounded-lg border text-slate-400 w-[90%]">
+                    <h3 className="relative font-bold text-2xl mb-4 text-white p-3 py-9 ">
+                      Premium
+                    </h3>
+                    <br />
+                    <p className="text-lg">
+                      {`Experinec our services free without signup Avail free Tokenn to get the query generated by oADIRA 
+                `}
+                    </p>
+                    <br />
+                    <h2
+                      className="relative font-bold text-4xl text- "
+                      style={{
+                        background:
+                          "linear-gradient(to bottom, #8c8c8c, #000000)",
+                        WebkitBackgroundClip: "text",
+                        color: "transparent",
+                      }}
+                    >
+                      {`@₹99`}
+                    </h2>
+
+                    <br />
+                    <div className="flex justify-center items-center">
+                      <div className="text-left">
+                        <p className="text-lg">{`✔ Unlimited Token`}</p>
+                        <p className="text-lg">{`✔ Consult Us`}</p>
+                        <p className="text-lg">{`✔ Sign In Required`}</p>
+                      </div>
+                    </div>
+                    <br />
+                    <br />
+
+                    <div className="">
+                      <div className="grid gap-8 items-start justify-center">
+                        <div className="relative group">
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-900 to-zinc-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                          <button
+                            onClick={() => {
+                              // console.log("ek do teen");
+                              setPay(true);
+
+                              setCouponCode("");
+                            }}
+                            className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                          >
+                            <span className="flex items-center space-x-5">
+                              {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-pink-600 -rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>  */}
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-6 h-6 h-6 w-6 text-zinc-600 -rotate-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"
+                                />
+                              </svg>
+
+                              <span className="pr-6 text-gray-100">
+                                Premium
+                              </span>
+                            </span>
+                            <span className="pl-6 text-blue-900 group-hover:text-gray-100 transition duration-200">
+                              &rarr;
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                      <br />
+                      <br />
+                      <br />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {pay && (
               <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
                 <div className="cursor-pointer" onClick={() => setPay(false)}>
@@ -569,14 +476,19 @@ export default function Home() {
                     Premium Subscription
                   </h2>
                   <button
-                    onClick={()=>{
-                      checkout(
-                        {
-                          lineItems:[{price:"price_1P8QUrSJZsRaoKNmBKJctE2k",quantity:1}]
-                        }
-                      )
-                    }
-                    }
+                    onClick={() => {
+
+                  
+
+                      checkout({
+                        lineItems: [
+                          {
+                            price: "price_1P8QUrSJZsRaoKNmBKJctE2k",
+                            quantity: 1,
+                          },
+                        ],
+                      });
+                    }}
                     className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
                   >
                     Buy Premium
@@ -602,86 +514,37 @@ export default function Home() {
           </div>
         ) : (
           // Render this section if user is authenticated
-          <div className="bg-white text-black h-[60vh] w-[80vw] flex items-center justify-center">
+          <div className="bg-black text-slate-400 rounded-lg border text-with-smoke   h-[90vh] m-8 w-[80vw] flex justify-items-start">
             {pay && (
               <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
-                <div className="cursor-pointer" onClick={() => setPay(false)}>
-                  {`❌`}
-                </div>
-                <div className="bg-white p-8 rounded-md shadow-lg">
-                  <h2 className="text-xl font-bold mb-4">
-                    Premium Subscription
-                  </h2>
-                  <button
-                    onClick={console.log("hogaye")}
-                    className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
-                  >
-                    Buy Premium
-                  </button>
-                  <form onSubmit={console.log("cc hogaye")} className="flex">
-                    <input
-                      type="text"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      placeholder="Enter coupon code"
-                      className="border border-gray-400 p-2 rounded-l-md focus:outline-none"
-                    />
-                    <button
-                      type="submit"
-                      onSubmit={() => {
-                        setCouponCode((prev) => prev + " ");
-                        if (couponCode == "early200")
-                          console.log("applied hai bhai");
-                        signInWithGoogle("Premium");
-                        setPay(false);
-                      }}
-                      className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded-r-md"
+                <div className="bg-white p-8 rounded-md shadow-lg flex-col ">
+                  <div className=" flex gap-3 w-[100%] ">
+                    <h2 className="text-xl font-bold mb-4">
+                      Premium Subscription
+                    </h2>
+                    <div
+                      className="cursor-pointer mx-9"
+                      onClick={() => setPay(false)}
                     >
-                      Apply
-                    </button>
-                  </form>
-                </div>
-              </div>
-            )}
-            <p>
-              Thanks for signing in, {user.displayName}! with - {plan}Plan
-            </p>
-            <div className="rounded-lg shadow-md">
-              {/* <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}!        </h1> */}
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Logout
-              </button>
-            </div>
-            {plan == "Pro" ? (
-              
-              <>
-              <button
-              onClick={() => {
-                // console.log("ek do teen");
-                setPay(true);
-              }}
-              className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-2 rounded"
-            >
-              Sign in with Google-premium
-            </button>
-            {pay && (
-              <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
-                <div className="cursor-pointer" onClick={() => setPay(false)}>
-                  {`❌`}
-                </div>
-                <div className="bg-white p-8 rounded-md shadow-lg">
-                  <h2 className="text-xl font-bold mb-4">
-                    Premium Subscription
-                  </h2>
+                      {`❌`}
+                    </div>
+                  </div>
                   <button
-                    onClick={console.log("hogaye")}
+                    onClick={()=>{
+                      checkout({
+                        lineItems: [
+                          {
+                            price: "price_1P8QUrSJZsRaoKNmBKJctE2k",
+                            quantity: 1,
+                          },
+                        ],
+                      });
+                    }}
                     className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
                   >
                     Buy Premium
                   </button>
+                  <div>O R</div>
                   <form onSubmit={handleit} className="flex">
                     <input
                       type="text"
@@ -700,14 +563,119 @@ export default function Home() {
                 </div>
               </div>
             )}
-</>
+            <div className="w-[50%] flex-col p-5">
+              <p>
+                {`Welcome to ADIRA, your reliable safety companion. We're thrilled
+                you've joined us! With ADIRA, your safety is our top priority.
+                Whether you're walking alone or need assistance, we've got you
+                covered. Feel empowered with real-time support, emergency
+                contacts, and valuable safety tips. Our dedicated team is here
+                to ensure your peace of mind every step of the way. Thank you
+                for choosing ADIRA - together, we'll navigate life's journey
+                with confidence and security. Stay safe with ADIRA by your side.
+                Welcome aboard!`}
+              </p>
+              <p>
+                Thanks for signing in, {user.displayName}! <br />
+                <br />
+                Your Curently using {plan}Plan
+                <br />
+              </p>
+              <br />
+              <br />
+              <br />
+
+              <button
+                onClick={() => router.push("/adira")}
+                className="text-white underline hover:text-lg"
+              >
+                {`Try Adira ↗`}
+              </button>
+              <br />
+              <div className="rounded-lg shadow-md">
+                {/* <h1 className="text-3xl font-bold mb-4"> {user ? " " : "Guest"}!        </h1> */}
+                <button
+                  onClick={handleLogout}
+                  className="text-white underline hover:text-lg"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+            <div className="w-[50%] ">
+              <Lottie animationData={signin} />
+              <div className="h-[20%]">{``}</div>
+            {plan == "Pro" ? (
+              <>
+               <button
+                  onClick={() => {
+                    // console.log("ek do teen");
+                    setPay(true);
+                  }}
+                  className="bg-black border my-[-100px]  hover:bg-zinc-400 text-white font-bold py-2 px-4 rounded-r-md"
+                >
+                  Sign in with Google-premium
+                </button>
+                <br />
+
+                {pay && (
+              <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                <div className="bg-white p-8 rounded-md shadow-lg flex-col ">
+                  <div className=" flex gap-3 w-[100%] ">
+                    <h2 className="text-xl font-bold mb-4">
+                      Premium Subscription
+                    </h2>
+                    <div
+                      className="cursor-pointer mx-9"
+                      onClick={() => setPay(false)}
+                    >
+                      {`❌`}
+                    </div>
+                  </div>
+                  <button
+                    onClick={()=>{
+                      checkout({
+                        lineItems: [
+                          {
+                            price: "price_1P8QUrSJZsRaoKNmBKJctE2k",
+                            quantity: 1,
+                          },
+                        ],
+                      });
+                    }}
+                    className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded mr-4"
+                  >
+                    Buy Premium
+                  </button>
+                  <div>O R</div>
+                  <form onSubmit={handleit} className="flex">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter coupon code"
+                      className="border text-stone-950 border-gray-400 p-2 rounded-l-md focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-blue-500 hover:bg-blue-50 text-black font-bold py-2 px-4 rounded-r-md"
+                    >
+                      Apply
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+              </>
             ) : (
               ""
             )}
+            </div>
           </div>
         )}
       </div>
-      <div className="border-t border-white my-8 "></div>
+      <div className="border-t  from-blue-900 to-zinc-600 border-white  w-[80%]"></div>
+
       <div className="text-center">
         <h2
           className="text-[100px] font-bold"
@@ -717,98 +685,82 @@ export default function Home() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Top{" "}
-          <span
-            style={{
-              background: "linear-gradient(to right, pink, yellow, red, blue)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            FEATURES
-          </span>
+          Top FEATURES
         </h2>
       </div>
       {/* Feature section */}
-      <div>
-        <div className="container mx-auto px-6 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {/* <!-- Feature 1 --> */}
-            <div className="bg-gray-800 rounded-lg text-whiteX">
-              <h3 className="relative font-bold text-2xl mb-4">
-                Women Safety AL Chatbot
-              </h3>
-              <Lottie animationData={ws} />
 
-              <p className="text-lg">
-                {`With cutting-edge Artificial Intelligence technology, our
+      <div>
+        {/* <div> */}
+        <div className="mx-auto px-6 py-12 flex-row flex-wrap w-[95%] ">
+          <div className="">
+            <div className=" rounded-lg border text-slate-400 w-[100%] flex text-with-smoke ">
+              <div className="flex-col flex-wrap w-[50%] centeralign p-9 ">
+                <h3 className="relative font-bold text-5xl mb-4 text-white ">
+                  Women Safety AI Chatbot
+                </h3>
+                <br />
+                <p className="text-lg  ">
+                  {`With cutting-edge Artificial Intelligence technology, our
                 chatbot provides a safe and confidential space for women to seek
                 assistance, access resources, and receive support in moments of
                 need.`}
-              </p>
+                </p>
+              </div>
+              <div className="w-[40%] h-[40%] m-0">
+                <Lottie animationData={ws} />
+              </div>
             </div>
+            <br />
+            <br />
 
-            {/* <!-- Feature 2 --> */}
-            <div className="bg-gray-800 rounded-lg text-whiteX">
-              <h3 className="relative font-bold text-2xl mb-4">
-                {` Voice Commands...`}
-              </h3>
-              <Lottie animationData={vr} />
-
-              <p className="text-lg">
-                {`Introducing our cutting-edge AI-powered voice recording feature!
-                Experience seamless, hands-free recording with unparalleled
-                accuracy and clarity.`}
-              </p>
+            <div className=" rounded-lg border text-slate-400 w-[100%] flex text-with-smoke ">
+              <div className="w-[40%] h-[40%] m-0">
+                <Lottie animationData={vr} />
+              </div>
+              <div className="flex-col flex-wrap w-[50%] centeralign p-9 ">
+                <h3 className="relative font-bold text-5xl mb-4 text-white ">
+                  Voice Commands...
+                </h3>
+                <br />
+                <p className="text-lg">
+                  {`With cutting-edge Artificial Intelligence technology, our
+                chatbot provides a safe and confidential space for women to seek
+                assistance, access resources, and receive support in moments of
+                need.`}
+                </p>
+              </div>
             </div>
+            <br />
+            <br />
 
-            {/* <!-- Feature 3 --> */}
-            <div className="bg-gray-800 rounded-lg text-whiteX">
-              <h3 className="relative font-bold text-2xl mb-4">
-                Connect to Advocates
-              </h3>
-              <Lottie animationData={connect} />
-
-              <p className="text-lg">
-                {`Whether you're fighting for justice, championing causes, or
-                amplifying voices that need to be heard, our technology ensures
-                that every word is captured with precision and clarity.`}
-              </p>
+            <div className=" rounded-lg border text-slate-400 w-[100%] flex text-with-smoke ">
+              <div className="flex-col flex-wrap w-[50%] centeralign p-9 ">
+                <h3 className="relative font-bold text-5xl mb-4 text-white ">
+                  Connect to Advocates
+                </h3>
+                <br />
+                <p className="text-lg  ">
+                  {`With cutting-edge Artificial Intelligence technology, our
+                chatbot provides a safe and confidential space for women to seek
+                assistance, access resources, and receive support in moments of
+                need.`}
+                </p>
+              </div>
+              <div className="w-[40%] h-[40%] m-0">
+                <Lottie animationData={connect} />
+                {/* <Lottie animationData={ws} /> */}
+              </div>
             </div>
+            <br />
+            <br />
           </div>
         </div>
+        {/* </div> */}
       </div>
-      <div className="border-t border-white my-8 "></div>
-      <div className="text-center">
-        <h2
-          className="text-[100px] font-bold"
-          style={{
-            background: "linear-gradient(to bottom, #8c8c8c, #000000)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          Our{" "}
-          <span
-            style={{
-              background: "linear-gradient(to right, blue,red,yellow,pink )",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            PRIVILEGES
-          </span>
-        </h2>
-      </div>
-      {/* Feedback section */}
-      <div className="relative flex h-screen">
-        {/* Add content for the feedback section */}
-        <LayoutGrid cards={cards} />
-      </div>
-      <div className="border-t border-white my-8 "></div>
-      {/* footer section */}
-      {/* footer section */}
+      <div className="border-t  from-blue-900 to-zinc-600 border-white  w-[80%]"></div>
+
       <ContactUs />
-    </>
+    </div>
   );
 }

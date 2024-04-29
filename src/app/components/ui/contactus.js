@@ -37,8 +37,7 @@ export default function ContactUs() {
       id: 6,
       name: "Anay Verma",
       designation: "Backend Developer",
-      image:
-        "https://media.licdn.com/dms/image/D4D35AQGtB8cSGBYyPQ/profile-framedphoto-shrink_400_400/0/1705809413959?e=1711976400&v=beta&t=EtIchbl0sIcy7RJYAHwiDn7QXa1tjAc8T5EPoibp_iw", // Replace with the path to your image
+      image:"https://lh3.googleusercontent.com/a/ACg8ocIgzxbgajxbktQ9qFJqel6N-4U9vUzLiWECq_cQZnWov06oUFc=s96-c"
     },
     // Add more items as needed
   ];
@@ -54,16 +53,7 @@ export default function ContactUs() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Contact{" "}
-          <span
-            style={{
-              background: "linear-gradient(to right, blue,red,yellow )",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Us
-          </span>
+          Contact Us
         </h2>
       </div>
       <div className="flex justify-center mb-12">
