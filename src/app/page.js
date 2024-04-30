@@ -39,6 +39,7 @@ export default function Home() {
   const [plan, setPlan] = useState("");
   const router = useRouter();
   const [pay, setPay] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   async function getPlan(user) {
     if (user != null) {
       const firestore = getFirestore();
@@ -139,9 +140,16 @@ export default function Home() {
   function handleit(e) {
     e.preventDefault();
     setCouponCode((prev) => prev + " ");
-    if (couponCode == "AnayIsGreat") {
+    if (couponCode == "AnayIsGreat" || couponCode=="Adira3000") {
       console.log("applied hai bhai");
       signInWithGoogle("Premium");
+      setErrorMessage("");
+
+    }else {
+      setErrorMessage("Invalid coupon code. Please enter 'AnayIsGreat'.");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
     }
     setPay(false);
   }
@@ -465,7 +473,17 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
+            {errorMessage && (
+         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+         <div className="bg-slate-50	 p-8 rounded-lg shadow-md">
+           <div className="flex-col justify-between">
+             <h2 className="text-2xl font-semibold mb-4 text-black">
+               You have applied wrong coupon code !!!
+             </h2>
+           </div>
+         </div>
+       </div>
+      )}
             {pay && (
               <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
                 <div className="cursor-pointer" onClick={() => setPay(false)}>

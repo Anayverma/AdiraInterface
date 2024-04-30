@@ -374,6 +374,10 @@ export default function GetData() {
           <form
             onSubmit={handleSubmit}
             className="fixed bottom-0 left-0 w-full  "
+            style={{
+              WebkitBackdropFilter: "blur(10px)", // for Safari
+              backdropFilter: "blur(10px)",
+             }}
           >
             <div className=" flex items-center">
               <label className="flex-grow">
