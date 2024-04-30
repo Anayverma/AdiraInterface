@@ -136,9 +136,9 @@ export default function GetData() {
   async function fetchData() {
     try {
       setLoading(true);
-      // const response = await fetch("https://adira-model-backend.onrender.com", {
+      const response = await fetch("https://adira-model-backend.onrender.com", {
 
-      const response = await fetch("http://localhost:5000/", {
+      // const response = await fetch("http://localhost:5000/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
