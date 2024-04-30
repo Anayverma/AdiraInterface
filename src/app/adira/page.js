@@ -136,6 +136,8 @@ export default function GetData() {
   async function fetchData() {
     try {
       setLoading(true);
+      // const response = await fetch("https://adira-model-backend.onrender.com", {
+
       const response = await fetch("http://localhost:5000/", {
         method: "POST",
         headers: {
@@ -143,6 +145,8 @@ export default function GetData() {
         },
         body: JSON.stringify({ query: query }),
       });
+      console.log(response)
+      
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -269,7 +273,12 @@ export default function GetData() {
         </div>
       ) : (
         <main className="bg-black">
-          <nav className="navbar bg-zinc-900">
+          <nav className="navbar "
+          style={{
+            WebkitBackdropFilter: "blur(10px)", // for Safari
+            backdropFilter: "blur(10px)",
+           }}
+          >
             <div className="navbar-left">
               <span className="company-name">Adira</span>
               <span></span>

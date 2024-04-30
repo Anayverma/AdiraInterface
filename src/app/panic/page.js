@@ -104,13 +104,19 @@ export default function GetData() {
   async function fetchData() {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/", {
+      const response = await fetch("https://adira-model-backend.onrender.com", {
+        // const response = await fetch("http://localhost:5000/", {
+        // mode: 'no-cors',
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ query: query }),
+
       });
+      
+      console.log(response)
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -123,9 +129,10 @@ export default function GetData() {
 
       const command = JSON.stringify({ QUERY: query, MESSAGE: message });
       // setLoading(true);
-      // const response_new = await fetch("https://adira-interface.vercel.app/api", {
+      const response_new = await fetch("https://adira-interface.vercel.app/api", {
 
-      const response_new = await fetch("http://localhost:3000/api", {
+      // const response_new = await fetch("http://localhost:3000/api", {
+        mode: 'no-cors',
         method: "POST",
         body: command,
       });
@@ -178,7 +185,7 @@ export default function GetData() {
 
   return (
     <>
-      {!(count <= 100) ? (
+      {!(count <= 5) ? (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-slate-50	 p-8 rounded-lg shadow-md">
             <div className="flex-col justify-between">
@@ -209,7 +216,7 @@ export default function GetData() {
                     <div
                       className={`text-white p-2 rounded-lg max-w-[70%] mb-2 ${
                         message.role === "user"
-                          ? "bg-blue-500 self-end text-right ml-auto mr-[5%]"
+                          ? "self-end text-right ml-auto mr-[5%]"
                           : "bg-yellow-500 self-start ml-[5%] mt-6 "
                       }`}
                     >
@@ -220,7 +227,7 @@ export default function GetData() {
                 {message.role === "user" && (
                   <div className="flex items-center justify-end">
                     <div
-                      className={`text-white p-2 rounded-lg max-w-[70%] mb-2 bg-blue-500 self-end text-right ml-auto mr-[5%]`}
+                      className={`text-white p-2 rounded-lg max-w-[70%] mb-2 bg-blue-900 self-end text-right ml-auto mr-[5%]`}
                     >
                       {message.message}
                     </div>
@@ -247,9 +254,6 @@ export default function GetData() {
             onSubmit={handleSubmit}
             className="fixed bottom-0 left-0 w-full  p-4 border-t "
           >
-            <div className="ml-4 bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 transition-colors duration-300">
-              {count}/2 Used
-            </div>
             <div className="max-w-screen-lg mx-auto flex items-center">
               <label className="flex-grow">
                 <span className="sr-only">Enter your query:</span>
@@ -275,12 +279,13 @@ export default function GetData() {
                 <button
                   type="button"
                   onClick={startSpeechRecognition}
-                  className={`ml-4 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300
+                  className={`ml-4 bg-zinc-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300
                  `}
                 >
                   Voice Query
                 </button>
               )}
+
               {isRecording && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
                   <div className="text-white text-center">
@@ -295,6 +300,17 @@ export default function GetData() {
                   </div>
                 </div>
               )}
+              <div className="ml-4 bg-slate-600 text-white px-6 py-2 rounded-lgtransition-colors duration-300">
+                {count}/5 Used
+              </div>
+              <button
+                  type="button"
+                  onClick={()=>router.push("/")}
+                  className={`ml-4 bg-zinc-900 text-white px-6 py-2 rounded-lg transition-colors duration-300
+                 `}
+                >
+                  Home
+                </button>
             </div>
           </form>
         </main>
