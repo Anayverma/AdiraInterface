@@ -703,7 +703,7 @@ export default function Home() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Top FEATURES
+          Top Features
         </h2>
       </div>
       {/* Feature section */}
