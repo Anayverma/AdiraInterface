@@ -598,7 +598,7 @@ export default function Home() {
               <p>
                 Thanks for signing in, {user.displayName}! <br />
                 <br />
-                Your Curently using {plan}Plan
+               Your Curently using<span className="text-white font-bold "> {plan} Plan</span>
                 <br />
               </p>
               <br />
