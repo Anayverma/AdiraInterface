@@ -169,7 +169,8 @@ export default function Home() {
               <span className="text-sm	text-slate-600"> 1.0</span>
       </div>
       <div className="navbar-right">
-        <button className="navbar-button " onClick={()=>signInWithGoogle("Pro")}>{`Sign In`}</button>
+        {!user&&
+          <button className="navbar-button " onClick={()=>signInWithGoogle("Pro")}>{`Sign In`}</button>}
         <button className="navbar-button " onClick={()=>router.push("/aboutus")}>{`About Us ↗`}</button>
         <button className="navbar-button " onClick={()=>router.push("/adira")}>{`Try Adira ↗`}</button>
         <button className="navbar-button " onClick={()=>router.push("/f&q")}>{`F&Q ↗`}</button>
