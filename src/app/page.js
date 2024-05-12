@@ -49,7 +49,11 @@ export default function Home() {
       const clusterSnapshot = await getDocs(clusterRef);
       const existingDoc = clusterSnapshot.docs[0]; // Assuming there's only one document per cluster
       if (existingDoc) {
-        console.log(existingDoc.data().plan);
+        // console.log(existingDoc.data().plan);
+
+
+
+        
         setPlan(existingDoc.data().plan);
       }
     }
@@ -59,12 +63,12 @@ export default function Home() {
     const auth = getAuth();
     const storedUser = localStorage.getItem("user");
     // getPlan(user);
-    console.log(storedUser);
+    // console.log(storedUser);
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
       getPlan(user);
-      console.log("here,s the plan--", plan);
+      // console.log("here,s the plan--", plan);
     }
     // }
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
@@ -83,14 +87,14 @@ export default function Home() {
 
         // Check if the collection with the specified cluster (user.uid) exists
         const clusterSnapshot = await getDocs(clusterRef);
-        console.log(clusterSnapshot);
+        // console.log(clusterSnapshot);
         const existingDoc = clusterSnapshot.docs[0]; // Assuming there's only one document per cluster
         if (existingDoc) {
           // console.log(existingDoc.data().plan);
           setPlan(existingDoc.data().plan);
         }
 
-        console.log("he", plan);
+        // console.log("he", plan);
         localStorage.setItem("user", JSON.stringify(authUser));
       } else {
         setUser(null);
@@ -141,7 +145,7 @@ export default function Home() {
     e.preventDefault();
     setCouponCode((prev) => prev + " ");
     if (couponCode == "AnayIsGreat" || couponCode=="Adira3000") {
-      console.log("applied hai bhai");
+      // console.log("applied hai bhai");
       signInWithGoogle("Premium");
       setErrorMessage("");
 
