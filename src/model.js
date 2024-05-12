@@ -26,7 +26,7 @@ async function getDocumentById(collectionPath, documentId) {
         return { id: docSnapshot.id, ...docSnapshot.data() };
       } else {
         // Document does not exist
-        console.log(`Document with ID '${documentId}' does not exist in collection '${collectionPath}'`);
+        // console.log(`Document with ID '${documentId}' does not exist in collection '${collectionPath}'`);
         return null;
       }
     } catch (error) {
@@ -47,7 +47,7 @@ async function getDocumentById(collectionPath, documentId) {
       // Delete each document in the collection
       querySnapshot.forEach(async (doc) => {
         await deleteDoc(doc.ref);
-        console.log(`Document with ID ${doc.id} successfully deleted`);
+        // console.log(`Document with ID ${doc.id} successfully deleted`);
       });
   
       // After deleting all documents, delete the collection itself
@@ -62,7 +62,7 @@ async function getDocumentById(collectionPath, documentId) {
   
   async function fetchDocsfromFireStore(cluster) {
     const querySanpshot = await getDocs(collection(db, cluster));
-    console.log("sara data--", querySanpshot);
+    // console.log("sara data--", querySanpshot);
     const data = [];
     querySanpshot.forEach((doc) => {
       data.push({
@@ -81,7 +81,7 @@ async function getDocumentById(collectionPath, documentId) {
         chat: chat,
         plan:plan
       });
-      console.log("chat Stored Succesfully ", docRef.id);
+      console.log("chat Stored Succesfully ");
       return true;
     } catch (error) {
       console.log("Chat did not stored ", error);
@@ -112,22 +112,22 @@ async function getDocumentById(collectionPath, documentId) {
           ],
           plan: plan,
         });
-        console.log("Document stored successfully with ID:", docRef.id);
+        console.log("Document stored successfully ");
         return true;
       } else {
         // Collection already exists, check for plan upgrade if plan is 'premium'
         const existingDoc = clusterSnapshot.docs[0]; // Assuming there's only one document per cluster
-        console.log("jjf", existingDoc.data().plan);
+        // console.log("jjf", existingDoc.data().plan);
         if (plan == "Premium" && existingDoc.data().plan == "Pro") {
-          console.log("pro but prem");
+          // console.log("pro but prem");
           // Upgrade to 'premium' plan if the existing plan is not 'pro'
           await updateDoc(doc(firestore, cluster, existingDoc.id), {
             plan: "Premium",
           });
-          console.log("Account upgraded to premium plan");
+          // console.log("Account upgraded to premium plan");
         } else {
           // Plan is not 'premium' or account already has 'pro' plan, do not upgrade
-          console.log("Plan not upgraded");
+          // console.log("Plan not upgraded");
         }
   
         return true; // Return true to indicate document operation was successful
