@@ -12,7 +12,7 @@ export default function Home() {
   const items = [
     {
       id: 1,
-      name: "Dr. Shipha Suman",
+      name: "Dr. Shilpa Suman",
       // designation: " Project Head - (Gold Medalist)Phd , M.tech.",
       designation: "Project Head  (Gold Medalist,PhD, M.Tech.)",
       message: "Leading the team to innovate and create impactful solutions.",
