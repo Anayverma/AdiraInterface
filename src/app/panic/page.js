@@ -26,14 +26,14 @@ export default function GetData() {
     const storedChat = localStorage.getItem("Panicchat");
     const totcount = localStorage.getItem("Count");
 
-    console.log("stored chat is", storedChat);
-    console.log("count stored is ", totcount);
+    // console.log("stored chat is", storedChat);
+    // console.log("count stored is ", totcount);
     if (totcount) {
       try {
         const parsedCount = JSON.parse(totcount);
         setCount(parsedCount);
-        console.log(parsedCount, "----------------");
-        console.log("Count is ", count);
+        // console.log(parsedCount, "----------------");
+        // console.log("Count is ", count);
       } catch (error) {
         console.error("Error parsing stored chat:", error);
         // Handle parsing error gracefully, e.g., by setting default chat state
@@ -48,8 +48,8 @@ export default function GetData() {
       try {
         const parsedChat = JSON.parse(storedChat);
         if (!parsedChat.length == 0) setChat(parsedChat);
-        console.log(parsedChat, "pojdoj");
-        console.log("chat is ", chat);
+        // console.log(parsedChat, "pojdoj");
+        // console.log("chat is ", chat);
       } catch (error) {
         console.error("Error parsing stored chat:", error);
         // Handle parsing error gracefully, e.g., by setting default chat state
@@ -62,9 +62,9 @@ export default function GetData() {
   }, []);
 
   useEffect(() => {
-    console.log("bye");
-    console.log(chat);
-    console.log(count);
+    // console.log("bye");
+    // console.log(chat);
+    // console.log(count);
     localStorage.setItem("Panicchat", JSON.stringify(chat));
     localStorage.setItem("Count", JSON.stringify(count));
   }, [chat, count]);
@@ -115,7 +115,7 @@ export default function GetData() {
 
       });
       
-      console.log(response)
+      // console.log(response)
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -125,7 +125,7 @@ export default function GetData() {
 
       const { message } = responseData;
 
-      console.log("message", message);
+      // console.log("message", message);
 
       const command = JSON.stringify({ QUERY: query, MESSAGE: message });
       // setLoading(true);
@@ -138,9 +138,9 @@ export default function GetData() {
       });
       const data = await response_new.json();
 
-      console.log("data hai yeh bhai ", data);
+      // console.log("data hai yeh bhai ", data);
       const message_new = data.RESULT;
-      console.log("new message hai yeh bhai ", message_new);
+      // console.log("new message hai yeh bhai ", message_new);
 
       setChat((prevChat) => [
         ...prevChat,
