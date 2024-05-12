@@ -5,7 +5,7 @@ export default function ContactUs() {
   const items = [
     {
       id: 1,
-      name: "Dr. Shipha Suman",
+      name: "Dr. Shilpa Suman",
       designation: "Project Head",
       image: "https://shorturl.at/noUWX", // Replace with the path to your image
     },
