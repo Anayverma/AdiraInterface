@@ -56,7 +56,7 @@ export default function GetData() {
 
     const clusterSnapshot = await getDocs(clusterRef);
     const existingDoc = clusterSnapshot.docs[0];
-    console.log(existingDoc.data().plan);
+    // console.log(existingDoc.data().plan);
     setPlan(existingDoc.data().plan);
   }
 
@@ -73,28 +73,30 @@ export default function GetData() {
         const test = 0;
       }
     });
-    console.log("ye lo user lelo user", user);
+    // console.log("ye lo user lelo user", user);
 
     return () => unsubscribe();
   }, [user]);
-  console.log("Initial user state:", user);
+  // console.log("Initial user state:", user);
   useEffect(() => {
     async function getData() {
       async function fetchstoredData() {
         // console.log(user.uid)
-        console.log("ye lo user lelo user      hjfcig", user);
+        // console.log("ye lo user lelo user      hjfcig", user);
         // const uid=await user.uid;
         const data = await fetchDocsfromFireStore(user.uid);
-        console.log("yehhdhhd", data);
+        // console.log("yehhdhhd", data);
         setFsdata(data);
         return data;
       }
       if (user != null) {
         const data = await fetchstoredData();
-        console.log(" FS DATA ==  ", data[0].id);
+        // console.log(" FS DATA ==  ", data[0].id);
         const obj = await getDocumentById(user.uid, data[0].id);
         const savedChat = obj.chat;
-        console.log("yuegyug", savedChat);
+        // console.log("yuegyug", savedChat);
+
+        
         setChat(savedChat);
       }
     }
@@ -145,7 +147,7 @@ export default function GetData() {
         },
         body: JSON.stringify({ query: query }),
       });
-      console.log(response)
+      // console.log(response)
       
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -166,9 +168,9 @@ export default function GetData() {
       });
       const data = await response_new.json();
 
-      console.log("data hai yeh bhai ", data);
+      // console.log("data hai yeh bhai ", data);
       const message_new = data.RESULT;
-      console.log("new message hai yeh bhai ", message_new);
+      // console.log("new message hai yeh bhai ", message_new);
 
       setChat((prevChat) => [
         ...prevChat,
@@ -222,7 +224,7 @@ export default function GetData() {
       console.log("success he bhai success hehehe .");
       setShowContactForm(false); // Close the contact form after submission
     } else {
-      console.log("Bhai BT hai kya kre ");
+      // console.log("Bhai BT hai kya kre ");
     }
   };
   const storeChatData = async (query, message) => {
@@ -246,12 +248,12 @@ export default function GetData() {
       user.uid
     );
     if (success) {
-      console.log("success he bhai success hehehe .at ", user.uid);
+      // console.log("success he bhai success hehehe .at ", user.uid);
     } else {
-      console.log("Bhai BT hai kya kre ");
+      // console.log("Bhai BT hai kya kre ");
     }
   };
-  console.log(user);
+  // console.log(user);
   return (
     <>
       {user == null ? (
