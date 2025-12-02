@@ -56,6 +56,14 @@ export default function Home() {
         "Passionate about backend development and creating scalable solutions.",
       image:"https://lh3.googleusercontent.com/a/ACg8ocIgzxbgajxbktQ9qFJqel6N-4U9vUzLiWECq_cQZnWov06oUFc=s96-c"
     },
+    {
+      id: 7,
+      name: "Sachin Chandra",
+      designation: "AI Developer",
+      message:
+        "Solve problems with AI :)",
+      image:"https://shorturl.at/gNT69"
+    },
   ];
 
   return (
