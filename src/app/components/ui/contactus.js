@@ -39,6 +39,12 @@ export default function ContactUs() {
       designation: "Backend Developer",
       image:"https://lh3.googleusercontent.com/a/ACg8ocIgzxbgajxbktQ9qFJqel6N-4U9vUzLiWECq_cQZnWov06oUFc=s96-c"
     },
+    {
+      id: 7,
+      name: "Sachin Chandra",
+      designation: "AI Developer",
+      image:"https://i.ibb.co/5h88kJfb/Whats-App-Image-2025-12-02-at-09-54-15.jpg"
+    },
     // Add more items as needed
   ];
 
