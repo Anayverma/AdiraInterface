@@ -62,7 +62,7 @@ export default function Home() {
       designation: "AI Developer",
       message:
         "Solve problems with AI :)",
-      image:"https://shorturl.at/gNT69"
+      image:"https://i.ibb.co/5h88kJfb/Whats-App-Image-2025-12-02-at-09-54-15.jpg"
     },
   ];
 
